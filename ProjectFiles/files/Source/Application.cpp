@@ -17,25 +17,32 @@ Application::~Application()
 void Application::Run()
 {
 
-    std::string currentPath = std::filesystem::current_path().parent_path().string(); 
-    std::string assetPath = currentPath + "\\Resources\\container.jpg";
+    std::string projectPath = std::filesystem::current_path().parent_path().string(); 
+    std::string assetPath = projectPath + "\\Resources\\";
 
     std::string vertexShaderSrc = R"(
         #version 330 core    
  
         layout (location = 0) in vec3 a_Position;
+        layout (location = 1) in vec3 a_Normal; 
         layout (location = 1) in vec2 a_TexCoord; 
-        // layout (location = 2) in vec3 a_Color;
 
-       // out vec3 outColor;
+
         out vec2 texCoord;
+        out vec3 outNormal;
+        out vec3 fragPos;
+
         uniform mat4 u_ViewProjection;
+        uniform mat4 u_ViewMatrix;
 
         void main()
         {
-            gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
-            // outColor = a_Color;
             texCoord = a_TexCoord;
+            outNormal = a_Normal;
+
+
+            gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
+            fragPos = vec3(u_ViewMatrix * vec4(a_Position, 1.0));
         }
     )";
 
@@ -44,75 +51,69 @@ void Application::Run()
         #version 330 core
           
         out vec4 FragColor;
-       // in vec3 outColor;
+
         in vec2 texCoord;
-      
+        in vec3 outNormal;
+        in vec3 fragPos;
+
         uniform sampler2D u_Texture;
+        uniform mat4 u_ViewProjection;
+        
+        float ambientLightStrength = 0.2f;
+        float diffuseLightStrength = 0.6f;
+
+        vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);
+        vec3 objectColor = vec3(0.5f, 1.0f, 0.5f);        
+        vec3 lightPos = vec3(1.2f, 1.0f, 2.0f);
+
+        vec3 ambientLight = lightColor * ambientLightStrength;
+
+
+        vec3 norm = normalize(outNormal);
+        vec3 lightDir = normalize(lightPos - fragPos);
+        float diff = max(dot(norm, lightDir), 0.0);
+        
+        vec3 diffuseLight = diff * lightColor * diffuseLightStrength;
+        vec3 result = (ambientLight + diffuseLight) * objectColor;
 
         void main()
         {
-              FragColor = texture(u_Texture, texCoord);
+             // FragColor = texture(u_Texture, texCoord);
+                FragColor = vec4(result, 1.0f);
         }
     )";
 
-
-
-    float vertices[] = {
-
-        // Coordinates x,y,z   // Textures
-        0.5f,  0.5f,  0.5f,    1.0f, 1.0f,//0
-       -0.5f,  0.5f,  0.5f,    1.0f, 0.0f,//1
-       -0.5f,  0.5f, -0.5f,    0.0f, 0.0f,//2
-        0.5f,  0.5f, -0.5f,    0.0f, 1.0f,//3
-        0.5f, -0.5f,  0.5f,    1.0f, 1.0f,////4
-       -0.5f, -0.5f,  0.5f,    1.0f, 0.0f,////5
-       -0.5f, -0.5f, -0.5f,    0.0f, 0.0f,////6
-        0.5f, -0.5f, -0.5f,    0.0f, 1.0f////7
-    };
-
-    uint32_t indecies[] = {
-
-        0, 1, 3, //top 1
-        3, 1, 2, //top 2
-        2, 6, 7, //front 1
-        7, 3, 2, //front 2
-        7, 6, 5, //bottom 1
-        5, 4, 7, //bottom 2
-        5, 1, 4, //back 1
-        4, 1, 0, //back 2
-        4, 3, 7, //right 1
-        3, 4, 0, //right 2
-        5, 6, 2, //left 1
-        5, 1, 2  //left 2
-    };
-
+    m_Model = std::make_unique<ModelMesh>(assetPath + "monkey.obj");
+    
 
     // Create Vertex Array
     m_VertexArray = std::make_shared<VertexArray>();
 
     // Vertex buffer object
-    m_VertexBuffer = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
+    m_VertexBuffer = std::make_shared<VertexBuffer>(&m_Model->GetVertices()[0], m_Model->GetVertices().size() * sizeof(*m_Model->GetVertices().data()));
     
     // Create layout
     BufferLayout layout = {
         { ShaderDataType::Float3, "a_Position" },
-        { ShaderDataType::Float2, "a_TexCoord"}, 
+        { ShaderDataType::Float3, "a_Normal"   }
+       // { ShaderDataType::Float2, "a_TexCoord"}, 
        // { ShaderDataType::Float3, "a_Color" }
         
     };
 
+    // Vertex Array Object
     m_VertexBuffer->SetLayout(layout);
     m_VertexArray->AddVertexBuffer(m_VertexBuffer);
     
 
 
-    // Index buffer object
-    m_IndexBuffer = std::make_shared<IndexBuffer>(indecies, sizeof(indecies) / sizeof(uint32_t));
+    // Index Buffer Object
+    m_IndexBuffer = std::make_shared<IndexBuffer>(&m_Model->GetIndecies()[0], m_Model->GetIndecies().size());
     m_VertexArray->AddIndexBuffer(m_IndexBuffer);
 
 
     // Texture
-    m_Texture = std::make_unique<Texture>(assetPath);
+    m_Texture = std::make_unique<Texture>(assetPath + "container.jpg");
 
    
     // Shaders 
@@ -139,10 +140,11 @@ void Application::Run()
 
         m_Shader->Bind();
         m_Shader->UploadUniformMat4("u_ViewProjection", m_CameraInstance.GetViewProjectionMatrix());
+        m_Shader->UploadUniformMat4("u_ViewMatrix", m_CameraInstance.GetViewMatrix());
 
         m_VertexArray->Bind();
         glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
-
+        //glDrawArrays(GL_TRIANGLES, 0, m_Model->GetIndecies().size());
 
 
         /* Swap front and back buffers */

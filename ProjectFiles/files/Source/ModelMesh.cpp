@@ -26,7 +26,7 @@ ModelMesh::ModelMesh(const std::string& path)
 			stream >> y;
 			stream >> z;
 			verticies = glm::vec3(x, y, z);
-			m_Verticies.push_back(verticies);
+			m_Vertices.push_back(verticies);
 		}
 		else if (line.substr(0, 2) == "vt")
 		{
@@ -38,20 +38,42 @@ ModelMesh::ModelMesh(const std::string& path)
 			texCoordinates = glm::vec2(u, v);
 			m_TextureCoordinates.push_back(texCoordinates);
 		}
+		else if (line.substr(0, 2) == "vn")
+		{
+			float x, y, z;
+			std::istringstream stream(line.substr(3));
+			glm::vec3 normals;
+			stream >> x;
+			stream >> y;
+			stream >> z;
+			normals = glm::vec3(x, y, z);
+			m_Normals.push_back(normals);
+		}
 		else if (line.substr(0, 2) == "f ")
 		{
 			int a, b, c; //to store mesh index
 			int A, B, C; //to store texture index
+			int na, nb, nc; //to store texture index
 
 			const char* chh = line.c_str();
-			sscanf(chh, "f %i/%i %i/%i %i/%i", &a, &A, &b, &B, &c, &C);
+			sscanf(chh, "f %i/%i/%i %i/%i/%i %i/%i/%i", &a, &A, &na, &b, &B, &nb, &c, &C, &nc);
+
 
 			a--; b--; c--;
 			A--; B--; C--;
+			na--; nb--; nc--;
 
-			m_Indecies.push_back(a);
-			m_Indecies.push_back(b);
-			m_Indecies.push_back(c);
+			m_VertexIndices.push_back(a);
+			m_VertexIndices.push_back(b);
+			m_VertexIndices.push_back(c);
+
+			m_TextureIndices.push_back(A);
+			m_TextureIndices.push_back(B);
+			m_TextureIndices.push_back(C);
+
+			m_NormalIndices.push_back(na);
+			m_NormalIndices.push_back(nb);
+			m_NormalIndices.push_back(nc);
 		}
 	}
 	CombineVertData();
@@ -64,47 +86,38 @@ ModelMesh::~ModelMesh()
 
 void ModelMesh::CombineVertData()
 {
-	//int size = 20000;
-	int size = m_Verticies.size();
+	uint32_t size = m_VertexIndices.size();
+	int index = 0;
+	m_IndicesData.push_back(index);
 
-	for (int i = 0; i < size; i++)
+	for (uint32_t i = 0; i < size; i++)
 	{
-		float data = 0.0f;
-		data = m_Verticies[i].x;
-		m_VertData.push_back(data);
+		int indicesValue = m_VertexIndices[i];
+		glm::vec3 data = m_Vertices[indicesValue];
+		m_VertData.push_back(data.x);
+		m_VertData.push_back(data.y);
+		m_VertData.push_back(data.z);
 
-		data = m_Verticies[i].y;
-		m_VertData.push_back(data);
+		indicesValue = m_NormalIndices[i];
+		data = m_Normals[indicesValue];
+		m_VertData.push_back(data.x);
+		m_VertData.push_back(data.y);
+		m_VertData.push_back(data.z);
 
-		data = m_Verticies[i].z;
-		m_VertData.push_back(data);
-
-
-		data = m_TextureCoordinates[i].x;
-		m_VertData.push_back(data);
-
-		data = m_TextureCoordinates[i].y;
-		m_VertData.push_back(data);
+		index++;
+		m_IndicesData.push_back(index);
+		
 	}
+
 }
 
 std::vector<uint32_t> ModelMesh::GetIndecies()
 {
-	return m_Indecies;
+	return m_IndicesData;
 }
 
 std::vector<float> ModelMesh::GetVertices()
 {
 	return m_VertData;
-}
-
-std::vector<glm::vec2> ModelMesh::GetTexCoord() const
-{
-	return m_TextureCoordinates;
-}
-
-int ModelMesh::GetVerticiesArraySize()
-{
-	return m_VertData.size();
 }
 

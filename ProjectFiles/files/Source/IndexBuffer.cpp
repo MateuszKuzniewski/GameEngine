@@ -1,6 +1,7 @@
 #include "IndexBuffer.h"
 #include "GL/glew.h"
 
+
 IndexBuffer::IndexBuffer(const uint32_t* indices, uint32_t count) 
     : m_count(count)
 {
