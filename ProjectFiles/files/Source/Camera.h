@@ -25,12 +25,14 @@ public:
 
 
 
+
 	glm::quat GetOrientation() const;
 	glm::mat4 GetViewMatrix() const;
 	glm::mat4 GetViewProjectionMatrix();
 	glm::vec3 GetUpVector() { return m_UpVector; };
 	glm::vec3 GetRightDirection() { return glm::transpose(m_ViewMatrix)[0]; }
 	glm::vec3 GetViewDir() const { return -glm::transpose(m_ViewMatrix)[2]; }
+	glm::vec3 GetPosition() const { return m_Position;  }
 
 	glm::vec3 GetForwardVector() { return m_ForwardVector; }
 
@@ -69,6 +71,7 @@ private:
 	glm::mat4 m_ViewMatrix;
 	glm::mat4 m_ProjectionMatrix;
 	glm::mat4 m_ViewProjectionMatrix;
+	
 
 
 	static Camera m_Instance;

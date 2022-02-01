@@ -25,7 +25,7 @@ void Application::Run()
  
         layout (location = 0) in vec3 a_Position;
         layout (location = 1) in vec3 a_Normal; 
-        layout (location = 1) in vec2 a_TexCoord; 
+        layout (location = 2) in vec2 a_TexCoord; 
 
 
         out vec2 texCoord;
@@ -58,9 +58,11 @@ void Application::Run()
 
         uniform sampler2D u_Texture;
         uniform mat4 u_ViewProjection;
-        
+        uniform vec3 u_ViewPos;
+
         float ambientLightStrength = 0.2f;
         float diffuseLightStrength = 0.6f;
+        float specularLightStrength = 0.5f;
 
         vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);
         vec3 objectColor = vec3(0.5f, 1.0f, 0.5f);        
@@ -68,13 +70,19 @@ void Application::Run()
 
         vec3 ambientLight = lightColor * ambientLightStrength;
 
-
+        // diffuse
         vec3 norm = normalize(outNormal);
         vec3 lightDir = normalize(lightPos - fragPos);
         float diff = max(dot(norm, lightDir), 0.0);
-        
         vec3 diffuseLight = diff * lightColor * diffuseLightStrength;
-        vec3 result = (ambientLight + diffuseLight) * objectColor;
+        
+        // specular
+        vec3 viewDir = normalize(u_ViewPos - fragPos);
+        vec3 reflectDir = reflect(-lightDir, norm);
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+        vec3 specularLight = specularLightStrength * spec * lightColor;
+
+        vec3 result = (ambientLight + diffuseLight + specularLight) * objectColor;
 
         void main()
         {
@@ -141,10 +149,10 @@ void Application::Run()
         m_Shader->Bind();
         m_Shader->UploadUniformMat4("u_ViewProjection", m_CameraInstance.GetViewProjectionMatrix());
         m_Shader->UploadUniformMat4("u_ViewMatrix", m_CameraInstance.GetViewMatrix());
+        m_Shader->UploadUniformVec3("u_ViewPos", m_CameraInstance.GetPosition());
 
         m_VertexArray->Bind();
         glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
-        //glDrawArrays(GL_TRIANGLES, 0, m_Model->GetIndecies().size());
 
 
         /* Swap front and back buffers */

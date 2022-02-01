@@ -9,7 +9,8 @@ Camera::Camera()
 	
 	UpdateViewMatrix();
 	UpdateProjectionMatrix();
-	
+
+
 }
 
 Camera::~Camera()
@@ -44,6 +45,7 @@ void Camera::UpdateViewMatrix()
 	glm::quat m_Orientation = GetOrientation();
 
 	m_ViewMatrix = glm::translate(glm::mat4(1.0f), m_Position) * glm::mat4(m_Orientation);
+
 	m_ViewMatrix = glm::inverse(m_ViewMatrix);
 }
 
@@ -111,7 +113,6 @@ void Camera::MousePressedState(const bool& state, int button)
 }
 
 
-
 void Camera::MouseOrbit(const glm::vec2& delta)
 {
 	float deltaAngleX = (3.14f  / m_WindowWidth); // a movement from left to right = 2*PI = 360 deg
@@ -138,6 +139,7 @@ void Camera::MouseOrbit(const glm::vec2& delta)
 	m_Yaw += -xAngle;
 	m_Pitch += -yAngle;
 	m_Position = finalYPosition;
+
 
 	
 }
