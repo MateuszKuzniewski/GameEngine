@@ -42,9 +42,9 @@ void Camera::UpdateProjectionMatrix()
 
 void Camera::UpdateViewMatrix()
 {
-	glm::quat m_Orientation = GetOrientation();
+	glm::quat orientation = GetOrientation();
 
-	m_ViewMatrix = glm::translate(glm::mat4(1.0f), m_Position) * glm::mat4(m_Orientation);
+	m_ViewMatrix = glm::translate(glm::mat4(1.0f), m_Position) * glm::mat4(orientation);
 
 	m_ViewMatrix = glm::inverse(m_ViewMatrix);
 }

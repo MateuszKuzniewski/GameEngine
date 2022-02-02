@@ -34,6 +34,7 @@ void Application::Run()
 
         uniform mat4 u_ViewProjection;
         uniform mat4 u_ViewMatrix;
+        uniform mat4 u_Transform;
 
         void main()
         {
@@ -41,8 +42,8 @@ void Application::Run()
             outNormal = a_Normal;
 
 
-            gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
-            fragPos = vec3(u_ViewMatrix * vec4(a_Position, 1.0));
+            gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
+            fragPos = vec3(u_ViewMatrix * u_Transform * vec4(a_Position, 1.0));
         }
     )";
 
@@ -91,34 +92,14 @@ void Application::Run()
         }
     )";
 
-    m_Model = std::make_unique<ModelMesh>(assetPath + "monkey.obj");
     
+    m_MonkeyHead = std::make_shared<GameObject>();
+    m_MonkeyHead->LoadModel(assetPath + "monkey.obj");
+    m_MonkeyHead->SetPosition(0.0f, 3.0f, 0.0f);
 
-    // Create Vertex Array
-    m_VertexArray = std::make_shared<VertexArray>();
-
-    // Vertex buffer object
-    m_VertexBuffer = std::make_shared<VertexBuffer>(&m_Model->GetVertices()[0], m_Model->GetVertices().size() * sizeof(*m_Model->GetVertices().data()));
-    
-    // Create layout
-    BufferLayout layout = {
-        { ShaderDataType::Float3, "a_Position" },
-        { ShaderDataType::Float3, "a_Normal"   }
-       // { ShaderDataType::Float2, "a_TexCoord"}, 
-       // { ShaderDataType::Float3, "a_Color" }
-        
-    };
-
-    // Vertex Array Object
-    m_VertexBuffer->SetLayout(layout);
-    m_VertexArray->AddVertexBuffer(m_VertexBuffer);
-    
-
-
-    // Index Buffer Object
-    m_IndexBuffer = std::make_shared<IndexBuffer>(&m_Model->GetIndecies()[0], m_Model->GetIndecies().size());
-    m_VertexArray->AddIndexBuffer(m_IndexBuffer);
-
+    m_MonkeyHead2 = std::make_shared<GameObject>();
+    m_MonkeyHead2->LoadModel(assetPath + "monkey.obj");
+    m_MonkeyHead2->SetPosition(3.0f, 0.0f, 0.0f);
 
     // Texture
     m_Texture = std::make_unique<Texture>(assetPath + "container.jpg");
@@ -127,13 +108,6 @@ void Application::Run()
     // Shaders 
     m_Shader = std::make_shared<Shader>(vertexShaderSrc, fragmentShaderSrc);
 
-    std::cout << "Number of vertex arrays created: "  << m_VertexArray.use_count()  << std::endl;
-    std::cout << "Number of vertex buffers created: " << m_VertexBuffer.use_count() << std::endl;
-    std::cout << "Number of index buffers created: "  << m_IndexBuffer.use_count()  << std::endl;
-
-    glEnable(GL_DEPTH_TEST);
-
-
 
 
     while (!glfwWindowShouldClose(m_AppWindow->GetWindow()))
@@ -141,18 +115,11 @@ void Application::Run()
         m_CameraInstance.RegisterKeyboardInput(m_AppWindow->GetWindow());
         m_CameraInstance.RegisterMouseInput(m_AppWindow->GetWindow());
 
-        glClearColor(0.1f, 0.1, 0.1f, 0.1f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        /* Render here */
-
-        m_Shader->Bind();
-        m_Shader->UploadUniformMat4("u_ViewProjection", m_CameraInstance.GetViewProjectionMatrix());
-        m_Shader->UploadUniformMat4("u_ViewMatrix", m_CameraInstance.GetViewMatrix());
-        m_Shader->UploadUniformVec3("u_ViewPos", m_CameraInstance.GetPosition());
-
-        m_VertexArray->Bind();
-        glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
+        m_Renderer->Setup();
+        m_Renderer->Submit(m_MonkeyHead, m_Shader, m_CameraInstance);
+        m_Renderer->Submit(m_MonkeyHead2, m_Shader, m_CameraInstance);
+      
 
 
         /* Swap front and back buffers */
