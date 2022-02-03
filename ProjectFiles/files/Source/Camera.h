@@ -29,12 +29,12 @@ public:
 	glm::quat GetOrientation() const;
 	glm::mat4 GetViewMatrix() const;
 	glm::mat4 GetViewProjectionMatrix();
-	glm::vec3 GetUpVector() { return m_UpVector; };
-	glm::vec3 GetRightDirection() { return glm::transpose(m_ViewMatrix)[0]; }
+	glm::vec3 GetUpVector() const { return m_UpVector; };
+	glm::vec3 GetRightDirection() const { return glm::transpose(m_ViewMatrix)[0]; }
 	glm::vec3 GetViewDir() const { return -glm::transpose(m_ViewMatrix)[2]; }
 	glm::vec3 GetPosition() const { return m_Position;  }
-
 	glm::vec3 GetForwardVector() { return m_ForwardVector; }
+
 
 
 	glm::vec2 m_InitialMousePosition = { 0.0f, 0.0f };
@@ -60,7 +60,7 @@ private:
 	float m_FOV;
 	float m_AspectRatio;
 	float m_NearClip, m_FarClip;
-	float m_Yaw, m_Pitch;
+	float m_Yaw, m_Pitch, m_Roll;
 
 	float m_WindowWidth = 1280;
 	float m_WindowHeight = 720;

@@ -4,12 +4,11 @@
 Camera Camera::m_Instance;
 
 Camera::Camera()
-	: m_FOV(30), m_NearClip(0.1f), m_FarClip(1000.0f)
+	: m_FOV(60), m_NearClip(0.1f), m_FarClip(1000.0f)
 {
 	
 	UpdateViewMatrix();
 	UpdateProjectionMatrix();
-
 
 }
 
@@ -37,7 +36,8 @@ bool Camera::IsRightMouseButtonPressed()
 void Camera::UpdateProjectionMatrix()
 {
 	m_AspectRatio = m_WindowWidth / m_WindowHeight;
-	m_ProjectionMatrix = glm::perspective(m_FOV, m_AspectRatio, m_NearClip, m_FarClip);
+	m_ProjectionMatrix = glm::perspective(glm::radians(m_FOV), m_AspectRatio, m_NearClip, m_FarClip);
+
 }
 
 void Camera::UpdateViewMatrix()
@@ -45,7 +45,6 @@ void Camera::UpdateViewMatrix()
 	glm::quat orientation = GetOrientation();
 
 	m_ViewMatrix = glm::translate(glm::mat4(1.0f), m_Position) * glm::mat4(orientation);
-
 	m_ViewMatrix = glm::inverse(m_ViewMatrix);
 }
 
@@ -118,8 +117,8 @@ void Camera::MouseOrbit(const glm::vec2& delta)
 	float deltaAngleX = (3.14f  / m_WindowWidth); // a movement from left to right = 2*PI = 360 deg
 	float deltaAngleY = (3.14f / m_WindowHeight);  // a movement from top to bottom = PI = 180 deg
 
-	float xAngle = delta.x * deltaAngleX;
-	float yAngle = delta.y * deltaAngleY;
+	float xAngle = delta.x * deltaAngleX * -1;
+	float yAngle = delta.y * deltaAngleY * -1;
 	
 	// TO DO: FIX. camera direction facing up vector 
 	// TO DO: FIX. rapid mouse motion messes up camera orientation
@@ -136,8 +135,8 @@ void Camera::MouseOrbit(const glm::vec2& delta)
 	rotationMatrixY = glm::rotate(rotationMatrixY, yAngle, GetRightDirection());
 	glm::vec3 finalYPosition = (rotationMatrixY * (finalXPosition - pivot)) + pivot;
 
-	m_Yaw += -xAngle;
-	m_Pitch += -yAngle;
+	m_Yaw -= xAngle;
+	m_Pitch -= yAngle;
 	m_Position = finalYPosition;
 
 
@@ -153,7 +152,7 @@ void Camera::MouseMove(const glm::vec2& delta)
 
 glm::quat Camera::GetOrientation() const
 {
-	return glm::vec3(-m_Pitch, -m_Yaw, 0.0f);
+	return glm::vec3(-m_Pitch, -m_Yaw, -m_Roll);
 }
 
 glm::mat4 Camera::GetViewMatrix() const
