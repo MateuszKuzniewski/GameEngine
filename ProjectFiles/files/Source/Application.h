@@ -24,6 +24,7 @@ private:
 	std::unique_ptr<Renderer> m_Renderer;
 	std::string WorkingDir;
 
+	std::vector<std::shared_ptr<GameObject>> m_ActiveGameObjects;
 
 };
 

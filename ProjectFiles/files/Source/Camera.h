@@ -55,7 +55,7 @@ private:
 	glm::vec3 m_ForwardVector = { 0.0f, 0.0f, -1.0f };
 
 
-	float m_CameraSpeed = 0.0001f;
+	float m_CameraSpeed = 0.0003f;
 
 	float m_FOV;
 	float m_AspectRatio;

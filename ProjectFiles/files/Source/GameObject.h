@@ -26,16 +26,19 @@ public:
 	void SetPosition(float x, float y, float z);
 	void LoadModel(const std::string& path);
 	void GenerateQuad();
+	void Update();
 
 	glm::mat4 GetTransform() const;
 	std::shared_ptr<IndexBuffer> GetIndexBuffer() const;
 	std::shared_ptr<VertexArray> GetVertexArray() const;
-
+	Properties GameObjectProperties;
 
 
 private:
 
 	void GenerateBuffers(const std::vector<float>& vertices, const std::vector<uint32_t>& indices);
+	void Gravity();
+	void UpdateTransform();
 
 private:
 
@@ -45,6 +48,6 @@ private:
 	std::unique_ptr<ModelMesh> m_ModelMesh;
 
 	glm::mat4 transform;
-
+	glm::vec3 position = { 0.0f, 0.0f, 0.0f };
 };
 

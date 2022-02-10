@@ -7,7 +7,7 @@ Application::Application()
 {
     m_AppWindow = new Window(1280, 720, "App", NULL, NULL);
 
-    
+
 }
 Application::~Application()
 {
@@ -95,7 +95,8 @@ void Application::Run()
     
     m_MonkeyHead = std::make_shared<GameObject>();
     m_MonkeyHead->LoadModel(assetPath + "monkey.obj");
-    m_MonkeyHead->SetPosition(0.0f, 3.0f, 0.0f);
+    m_MonkeyHead->SetPosition(0.0f, 5.0f, 0.0f);
+
 
     m_MonkeyHead2 = std::make_shared<GameObject>();
     m_MonkeyHead2->LoadModel(assetPath + "monkey.obj");
@@ -104,7 +105,8 @@ void Application::Run()
     m_Ground = std::make_shared<GameObject>();
     m_Ground->GenerateQuad();
     m_Ground->SetPosition(0.0f, -2.0f, -2.0f);
-    
+    m_Ground->GameObjectProperties.Gravity = false;
+
 
     // Texture
     m_Texture = std::make_unique<Texture>(assetPath + "container.jpg");
@@ -113,7 +115,9 @@ void Application::Run()
     // Shaders 
     m_Shader = std::make_shared<Shader>(vertexShaderSrc, fragmentShaderSrc);
 
-
+    m_ActiveGameObjects.push_back(m_MonkeyHead);
+    m_ActiveGameObjects.push_back(m_MonkeyHead2);
+    m_ActiveGameObjects.push_back(m_Ground);
 
     while (!glfwWindowShouldClose(m_AppWindow->GetWindow()))
     {
@@ -126,7 +130,12 @@ void Application::Run()
         m_Renderer->Submit(m_MonkeyHead2, m_Shader, m_CameraInstance);
         m_Renderer->Submit(m_Ground, m_Shader, m_CameraInstance);
       
-
+        for (auto gameObject : m_ActiveGameObjects)
+        {
+            gameObject->Update();
+        }
+        
+       
 
         /* Swap front and back buffers */
         glfwSwapBuffers(m_AppWindow->GetWindow());
