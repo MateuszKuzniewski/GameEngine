@@ -101,6 +101,11 @@ void Application::Run()
     m_MonkeyHead2->LoadModel(assetPath + "monkey.obj");
     m_MonkeyHead2->SetPosition(3.0f, 0.0f, 0.0f);
 
+    m_Ground = std::make_shared<GameObject>();
+    m_Ground->GenerateQuad();
+    m_Ground->SetPosition(0.0f, -2.0f, -2.0f);
+    
+
     // Texture
     m_Texture = std::make_unique<Texture>(assetPath + "container.jpg");
 
@@ -119,6 +124,7 @@ void Application::Run()
         m_Renderer->Setup();
         m_Renderer->Submit(m_MonkeyHead, m_Shader, m_CameraInstance);
         m_Renderer->Submit(m_MonkeyHead2, m_Shader, m_CameraInstance);
+        m_Renderer->Submit(m_Ground, m_Shader, m_CameraInstance);
       
 
 

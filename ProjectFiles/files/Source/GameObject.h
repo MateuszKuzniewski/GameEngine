@@ -10,6 +10,11 @@
 #include "VertexArray.h"
 #include "ModelMesh.h"
 
+struct Properties
+{
+	bool Gravity = true;
+	bool Collisions = true;
+};
 
 class GameObject
 {
@@ -19,10 +24,18 @@ public:
 	~GameObject();
 
 	void SetPosition(float x, float y, float z);
-	glm::mat4 GetTransform();
 	void LoadModel(const std::string& path);
+	void GenerateQuad();
+
+	glm::mat4 GetTransform() const;
 	std::shared_ptr<IndexBuffer> GetIndexBuffer() const;
 	std::shared_ptr<VertexArray> GetVertexArray() const;
+
+
+
+private:
+
+	void GenerateBuffers(const std::vector<float>& vertices, const std::vector<uint32_t>& indices);
 
 private:
 

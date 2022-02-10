@@ -20,6 +20,7 @@ private:
 	std::unique_ptr<Texture> m_Texture;
 	std::shared_ptr<GameObject> m_MonkeyHead;
 	std::shared_ptr<GameObject> m_MonkeyHead2;
+	std::shared_ptr<GameObject> m_Ground;
 	std::unique_ptr<Renderer> m_Renderer;
 	std::string WorkingDir;
 
