@@ -96,16 +96,17 @@ void Application::Run()
     m_MonkeyHead = std::make_shared<GameObject>();
     m_MonkeyHead->LoadModel(assetPath + "monkey.obj");
     m_MonkeyHead->SetPosition(0.0f, 5.0f, 0.0f);
-
+    m_MonkeyHead->Properties.Gravity = false;
 
     m_MonkeyHead2 = std::make_shared<GameObject>();
     m_MonkeyHead2->LoadModel(assetPath + "monkey.obj");
     m_MonkeyHead2->SetPosition(3.0f, 0.0f, 0.0f);
+    m_MonkeyHead2->Properties.Gravity = true;
 
     m_Ground = std::make_shared<GameObject>();
     m_Ground->GenerateQuad();
-    m_Ground->SetPosition(0.0f, -2.0f, -2.0f);
-    m_Ground->GameObjectProperties.Gravity = false;
+    m_Ground->SetPosition(0.0f, -5.0f, -5.0f);
+    m_Ground->Properties.Gravity = false;
 
 
     // Texture
@@ -131,10 +132,10 @@ void Application::Run()
         m_Renderer->Submit(m_Ground, m_Shader, m_CameraInstance);
       
         for (auto gameObject : m_ActiveGameObjects)
-        {
+        {   
+            gameObject->Properties.Gravity = false;
             gameObject->Update();
         }
-        
        
 
         /* Swap front and back buffers */

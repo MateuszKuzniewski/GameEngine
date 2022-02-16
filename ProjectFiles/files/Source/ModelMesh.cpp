@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 
 ModelMesh::ModelMesh(const std::string& path)
 {
@@ -26,6 +27,8 @@ ModelMesh::ModelMesh(const std::string& path)
 			stream >> y;
 			stream >> z;
 			verticies = glm::vec3(x, y, z);
+			m_HighestVerticesValue = CheckForHighestValue(verticies);
+			m_LowestVerticesValue = CheckForLowestValue(verticies);
 			m_Vertices.push_back(verticies);
 		}
 		else if (line.substr(0, 2) == "vt")
@@ -111,6 +114,32 @@ void ModelMesh::CombineVertData()
 
 }
 
+glm::vec3 ModelMesh::CheckForHighestValue(glm::vec3 values)
+{
+	if (values.x > m_Temp.x)
+		m_Temp.x = values.x;
+	if (values.y > m_Temp.y)
+		m_Temp.y = values.y;
+	if (values.z > m_Temp.z)
+		m_Temp.z = values.z;
+
+	
+	return m_Temp;
+}
+
+glm::vec3 ModelMesh::CheckForLowestValue(glm::vec3 values)
+{
+	if (values.x < m_TempLowest.x)
+		m_TempLowest.x = values.x;
+	if (values.y < m_TempLowest.y)
+		m_TempLowest.y = values.y;
+	if (values.z < m_TempLowest.z)
+		m_TempLowest.z = values.z;
+
+
+	return m_TempLowest;
+}
+
 std::vector<uint32_t> ModelMesh::GetIndecies()
 {
 	return m_IndicesData;
@@ -120,4 +149,15 @@ std::vector<float> ModelMesh::GetVertices()
 {
 	return m_VertData;
 }
+
+glm::vec3 ModelMesh::GetHighestVert() const
+{
+	return m_HighestVerticesValue;
+}
+
+glm::vec3 ModelMesh::GetLowestVert() const
+{
+	return m_LowestVerticesValue;
+}
+
 

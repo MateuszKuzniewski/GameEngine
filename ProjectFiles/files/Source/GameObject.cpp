@@ -1,5 +1,6 @@
 #include "GameObject.h"
 #include <GLFW/glfw3.h>
+#include <iostream>
 
 
 GameObject::GameObject() : transform(glm::mat4(1.0f))
@@ -48,7 +49,7 @@ void GameObject::GenerateBuffers(const std::vector<float>& vertices, const std::
 
 void GameObject::Gravity()
 {
-    if (!GameObjectProperties.Gravity)
+    if (!Properties.Gravity)
         return;
 
     float g = 0.001f;
@@ -59,6 +60,13 @@ void GameObject::Gravity()
 
     const float deltaSpeed = g * deltaTime;
     position += deltaSpeed * glm::vec3(0.0f, -1.0f, 0.0f);
+}
+
+void GameObject::BoxCollider()
+{
+    if (!Properties.Collisions)
+        return;
+
 }
 
 void GameObject::UpdateTransform()
@@ -81,8 +89,8 @@ void GameObject::GenerateQuad()
          // x,y,z           // normals
         -5.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f,
          5.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f,
-         5.0f, 0.0f, 5.0f,  0.0f, 1.0f, 0.0f,
-        -5.0f, 0.0f, 5.0f,  0.0f, 1.0f, 0.0f
+         5.0f, 0.0f, 10.0f,  0.0f, 1.0f, 0.0f,
+        -5.0f, 0.0f, 10.0f,  0.0f, 1.0f, 0.0f
     };
 
     std::vector<uint32_t> indices =
@@ -98,6 +106,7 @@ void GameObject::GenerateQuad()
 void GameObject::Update()
 {
     Gravity();
+    BoxCollider();
     UpdateTransform();
 }
 
@@ -115,4 +124,22 @@ std::shared_ptr<VertexArray> GameObject::GetVertexArray() const
 glm::mat4 GameObject::GetTransform() const
 {
     return transform;
+}
+
+float GameObject::GetWidth() const
+{
+    float width = glm::distance(m_ModelMesh->GetLowestVert().x, m_ModelMesh->GetHighestVert().x);
+    return width;
+}
+
+float GameObject::GetHeight() const
+{
+    float height = glm::distance(m_ModelMesh->GetLowestVert().y, m_ModelMesh->GetHighestVert().y);
+    return height;
+}
+
+float GameObject::GetDepth() const
+{
+    float depth = glm::distance(m_ModelMesh->GetLowestVert().z, m_ModelMesh->GetHighestVert().z);
+    return depth;
 }

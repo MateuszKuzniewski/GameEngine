@@ -29,15 +29,19 @@ public:
 	void Update();
 
 	glm::mat4 GetTransform() const;
+	float GetWidth() const;
+	float GetHeight() const;
+	float GetDepth() const;
 	std::shared_ptr<IndexBuffer> GetIndexBuffer() const;
 	std::shared_ptr<VertexArray> GetVertexArray() const;
-	Properties GameObjectProperties;
+	Properties Properties;
 
 
 private:
 
 	void GenerateBuffers(const std::vector<float>& vertices, const std::vector<uint32_t>& indices);
 	void Gravity();
+	void BoxCollider();
 	void UpdateTransform();
 
 private:
@@ -49,5 +53,7 @@ private:
 
 	glm::mat4 transform;
 	glm::vec3 position = { 0.0f, 0.0f, 0.0f };
+
+	float m_MinX, m_MinY, m_MinZ, m_MaxX, m_MaxY, m_MaxZ;
 };
 
