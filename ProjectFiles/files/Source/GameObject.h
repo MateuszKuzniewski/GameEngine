@@ -9,6 +9,7 @@
 #include "VertexBuffer.h"
 #include "VertexArray.h"
 #include "ModelMesh.h"
+#include "Time.h"
 
 struct Properties
 {

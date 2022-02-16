@@ -53,12 +53,8 @@ void GameObject::Gravity()
         return;
 
     float g = 0.001f;
-    float currentFrame = glfwGetTime();
-    float lastFrame = 0.0f;
-    float deltaTime = currentFrame - lastFrame;
-    lastFrame = currentFrame;
 
-    const float deltaSpeed = g * deltaTime;
+    const float deltaSpeed = g * Time::GetDeltaTime();
     position += deltaSpeed * glm::vec3(0.0f, -1.0f, 0.0f);
 }
 

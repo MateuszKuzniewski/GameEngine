@@ -58,12 +58,8 @@ glm::mat4 Camera::GetViewProjectionMatrix()
 
 void Camera::RegisterKeyboardInput(GLFWwindow* window)
 {
-	float currentFrame = glfwGetTime();
-	float lastFrame = 0.0f;
-	float deltaTime = currentFrame - lastFrame;
-	lastFrame = currentFrame;
 
-	const float deltaSpeed = m_CameraSpeed * deltaTime;
+	const float deltaSpeed = m_CameraSpeed * Time::GetDeltaTime();
 
 	// z
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)

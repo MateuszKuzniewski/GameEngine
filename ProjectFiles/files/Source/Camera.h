@@ -3,6 +3,7 @@
 #include <gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
 #include <gtc/quaternion.hpp>
+#include "Time.h"
 
 class Camera
 {
