@@ -3,6 +3,11 @@
 #include <vector>
 #include <glm.hpp>
 
+struct VectorComponents
+{
+	std::vector<float> x, y, z;
+};
+
 class ModelMesh
 {
 public:
@@ -23,6 +28,7 @@ private:
 	void CombineVertData(std::vector<glm::vec3>& vertices, std::vector<glm::vec3>& normals, std::vector<uint32_t>& vertIndices, std::vector<uint32_t>& normalIndices);
 	glm::vec3 CheckForHighestValue(const std::vector<glm::vec3>& vector);
 	glm::vec3 CheckForLowestValue(const std::vector<glm::vec3>& vector);
+	VectorComponents GetVectorComponents(const std::vector <glm::vec3>& vector);
 
 private:
 
@@ -34,6 +40,7 @@ private:
 
 	std::vector<float> m_VertData; 
 	std::vector<uint32_t> m_IndicesData; 
+
 
 };
 

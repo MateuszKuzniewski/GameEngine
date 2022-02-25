@@ -115,9 +115,11 @@ void ModelMesh::CombineVertData(std::vector<glm::vec3>& vertices, std::vector<gl
 		
 	}
 }
-
-glm::vec3 ModelMesh::CheckForHighestValue(const std::vector<glm::vec3>& vector)
+VectorComponents ModelMesh::GetVectorComponents(const std::vector<glm::vec3>& vector)
 {
+	/* Break down 2D Vector into separate 1D vectors to be able to access individual x,y,z components in those vectors */
+
+	VectorComponents vectorComponents;
 	std::vector<float> vertexComponent_X;
 	std::vector<float> vertexComponent_Y;
 	std::vector<float> vertexComponent_Z;
@@ -130,9 +132,20 @@ glm::vec3 ModelMesh::CheckForHighestValue(const std::vector<glm::vec3>& vector)
 		vertexComponent_Z.push_back(data.z);
 	}
 
-	auto vertX = *std::max_element(std::begin(vertexComponent_X), std::end(vertexComponent_X));
-	auto vertY = *std::max_element(std::begin(vertexComponent_Y), std::end(vertexComponent_Y));
-	auto vertZ = *std::max_element(std::begin(vertexComponent_Z), std::end(vertexComponent_Z));
+	vectorComponents.x = vertexComponent_X;
+	vectorComponents.y = vertexComponent_Y;
+	vectorComponents.z = vertexComponent_Z;
+
+	return vectorComponents;
+}
+
+glm::vec3 ModelMesh::CheckForHighestValue(const std::vector<glm::vec3>& vector)
+{
+	VectorComponents vertexComponents = GetVectorComponents(vector);
+
+	auto vertX = *std::max_element(std::begin(vertexComponents.x), std::end(vertexComponents.x));
+	auto vertY = *std::max_element(std::begin(vertexComponents.y), std::end(vertexComponents.y));
+	auto vertZ = *std::max_element(std::begin(vertexComponents.z), std::end(vertexComponents.z));
 
 	
 	return glm::vec3(vertX, vertY, vertZ);
@@ -140,25 +153,16 @@ glm::vec3 ModelMesh::CheckForHighestValue(const std::vector<glm::vec3>& vector)
 
 glm::vec3 ModelMesh::CheckForLowestValue(const std::vector<glm::vec3>& vector)
 {
-	std::vector<float> vertexComponent_X;
-	std::vector<float> vertexComponent_Y;
-	std::vector<float> vertexComponent_Z;
+	VectorComponents vertexComponents = GetVectorComponents(vector);
 
-	for (uint32_t i = 0; i < vector.size(); i++)
-	{
-		glm::vec3 data = vector[i];
-		vertexComponent_X.push_back(data.x);
-		vertexComponent_Y.push_back(data.y);
-		vertexComponent_Z.push_back(data.z);
-	}
-
-	auto vertX = *std::min_element(std::begin(vertexComponent_X), std::end(vertexComponent_X));
-	auto vertY = *std::min_element(std::begin(vertexComponent_Y), std::end(vertexComponent_Y));
-	auto vertZ = *std::min_element(std::begin(vertexComponent_Z), std::end(vertexComponent_Z));
+	auto vertX = *std::min_element(std::begin(vertexComponents.x), std::end(vertexComponents.x));
+	auto vertY = *std::min_element(std::begin(vertexComponents.y), std::end(vertexComponents.y));
+	auto vertZ = *std::min_element(std::begin(vertexComponents.z), std::end(vertexComponents.z));
 
 
 	return glm::vec3(vertX, vertY, vertZ);
 }
+
 
 void ModelMesh::GenerateQuadData()
 {
