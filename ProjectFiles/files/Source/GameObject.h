@@ -21,18 +21,24 @@ class GameObject
 {
 public:
 
-	GameObject();
+	GameObject() = default;
+	GameObject(const std::string& path);
 	~GameObject();
 
 	void SetPosition(float x, float y, float z);
-	void LoadModel(const std::string& path);
+	void BoxCollider(const std::shared_ptr<GameObject>& gobj);
 	void GenerateQuad();
 	void Update();
 
-	glm::mat4 GetTransform() const;
 	float GetWidth() const;
 	float GetHeight() const;
 	float GetDepth() const;
+
+	glm::mat4 GetTransform() const;
+	glm::vec2 GetWidthPoints() const;
+	glm::vec2 GetHeightPoints() const;
+	glm::vec2 GetDepthPoints() const;
+
 	std::shared_ptr<IndexBuffer> GetIndexBuffer() const;
 	std::shared_ptr<VertexArray> GetVertexArray() const;
 	Properties Properties;
@@ -41,8 +47,8 @@ public:
 private:
 
 	void GenerateBuffers(const std::vector<float>& vertices, const std::vector<uint32_t>& indices);
+	void OnCollision();
 	void Gravity();
-	void BoxCollider();
 	void UpdateTransform();
 
 private:
@@ -52,9 +58,8 @@ private:
 	std::shared_ptr<VertexArray> m_VertexArray;
 	std::unique_ptr<ModelMesh> m_ModelMesh;
 
-	glm::mat4 transform;
+	glm::mat4 transform = glm::mat4(0.0f);
 	glm::vec3 position = { 0.0f, 0.0f, 0.0f };
 
-	float m_MinX, m_MinY, m_MinZ, m_MaxX, m_MaxY, m_MaxZ;
 };
 

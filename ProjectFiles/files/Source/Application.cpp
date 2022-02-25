@@ -93,15 +93,13 @@ void Application::Run()
     )";
 
     
-    m_MonkeyHead = std::make_shared<GameObject>();
-    m_MonkeyHead->LoadModel(assetPath + "monkey.obj");
+    m_MonkeyHead = std::make_shared<GameObject>(assetPath + "monkey.obj");
     m_MonkeyHead->SetPosition(0.0f, 5.0f, 0.0f);
-    m_MonkeyHead->Properties.Gravity = false;
+    m_MonkeyHead->Properties.Gravity = true;
 
-    m_MonkeyHead2 = std::make_shared<GameObject>();
-    m_MonkeyHead2->LoadModel(assetPath + "monkey.obj");
-    m_MonkeyHead2->SetPosition(3.0f, 0.0f, 0.0f);
-    m_MonkeyHead2->Properties.Gravity = true;
+    m_MonkeyHead2 = std::make_shared<GameObject>(assetPath + "monkey.obj");
+    m_MonkeyHead2->SetPosition(0.0f, 0.0f, 0.0f);
+    m_MonkeyHead2->Properties.Gravity = false;
 
     m_Ground = std::make_shared<GameObject>();
     m_Ground->GenerateQuad();
@@ -133,9 +131,9 @@ void Application::Run()
       
         for (auto gameObject : m_ActiveGameObjects)
         {   
-            gameObject->Properties.Gravity = false;
             gameObject->Update();
         }
+        m_PhysicsWorld->Update(m_MonkeyHead, m_Ground);
        
 
         /* Swap front and back buffers */

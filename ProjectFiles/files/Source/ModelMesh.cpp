@@ -27,8 +27,6 @@ ModelMesh::ModelMesh(const std::string& path)
 			stream >> y;
 			stream >> z;
 			verticies = glm::vec3(x, y, z);
-			m_HighestVerticesValue = CheckForHighestValue(verticies);
-			m_LowestVerticesValue = CheckForLowestValue(verticies);
 			m_Vertices.push_back(verticies);
 		}
 		else if (line.substr(0, 2) == "vt")
@@ -79,7 +77,8 @@ ModelMesh::ModelMesh(const std::string& path)
 			m_NormalIndices.push_back(nc);
 		}
 	}
-	CombineVertData();
+
+	CombineVertData(m_Vertices, m_Normals, m_VertexIndices, m_NormalIndices);
 }
 
 ModelMesh::~ModelMesh()
@@ -87,22 +86,26 @@ ModelMesh::~ModelMesh()
 
 }
 
-void ModelMesh::CombineVertData()
+
+void ModelMesh::CombineVertData(std::vector<glm::vec3>& Vertices, std::vector<glm::vec3>& Normals, std::vector<uint32_t>& VertIndices, std::vector<uint32_t>& NormalIndices)
 {
-	uint32_t size = m_VertexIndices.size();
+	m_HighestVerticesValue = CheckForHighestValue(Vertices);
+	m_LowestVerticesValue = CheckForLowestValue(Vertices);
+	
+	uint32_t size = VertIndices.size();
 	int index = 0;
 	m_IndicesData.push_back(index);
 
 	for (uint32_t i = 0; i < size; i++)
 	{
-		int indicesValue = m_VertexIndices[i];
-		glm::vec3 data = m_Vertices[indicesValue];
+		int indicesValue = VertIndices[i];
+		glm::vec3 data = Vertices[indicesValue];
 		m_VertData.push_back(data.x);
 		m_VertData.push_back(data.y);
 		m_VertData.push_back(data.z);
 
-		indicesValue = m_NormalIndices[i];
-		data = m_Normals[indicesValue];
+		indicesValue = NormalIndices[i];
+		data = Normals[indicesValue];
 		m_VertData.push_back(data.x);
 		m_VertData.push_back(data.y);
 		m_VertData.push_back(data.z);
@@ -111,33 +114,85 @@ void ModelMesh::CombineVertData()
 		m_IndicesData.push_back(index);
 		
 	}
-
 }
 
-glm::vec3 ModelMesh::CheckForHighestValue(glm::vec3 values)
+glm::vec3 ModelMesh::CheckForHighestValue(const std::vector<glm::vec3>& vector)
 {
-	if (values.x > m_Temp.x)
-		m_Temp.x = values.x;
-	if (values.y > m_Temp.y)
-		m_Temp.y = values.y;
-	if (values.z > m_Temp.z)
-		m_Temp.z = values.z;
+	std::vector<float> vertexComponentX;
+	std::vector<float> vertexComponentY;
+	std::vector<float> vertexComponentZ;
+
+	for (uint32_t i = 0; i < vector.size(); i++)
+	{
+		glm::vec3 data = vector[i];
+		vertexComponentX.push_back(data.x);
+		vertexComponentY.push_back(data.y);
+		vertexComponentZ.push_back(data.z);
+	}
+
+	auto vertX = *std::max_element(std::begin(vertexComponentX), std::end(vertexComponentX));
+	auto vertY = *std::max_element(std::begin(vertexComponentY), std::end(vertexComponentY));
+	auto vertZ = *std::max_element(std::begin(vertexComponentZ), std::end(vertexComponentZ));
 
 	
-	return m_Temp;
+	return glm::vec3(vertX, vertY, vertZ);
 }
 
-glm::vec3 ModelMesh::CheckForLowestValue(glm::vec3 values)
+glm::vec3 ModelMesh::CheckForLowestValue(const std::vector<glm::vec3>& vector)
 {
-	if (values.x < m_TempLowest.x)
-		m_TempLowest.x = values.x;
-	if (values.y < m_TempLowest.y)
-		m_TempLowest.y = values.y;
-	if (values.z < m_TempLowest.z)
-		m_TempLowest.z = values.z;
+	std::vector<float> vertexComponentX;
+	std::vector<float> vertexComponentY;
+	std::vector<float> vertexComponentZ;
+
+	for (uint32_t i = 0; i < vector.size(); i++)
+	{
+		glm::vec3 data = vector[i];
+		vertexComponentX.push_back(data.x);
+		vertexComponentY.push_back(data.y);
+		vertexComponentZ.push_back(data.z);
+	}
+
+	auto vertX = *std::min_element(std::begin(vertexComponentX), std::end(vertexComponentX));
+	auto vertY = *std::min_element(std::begin(vertexComponentY), std::end(vertexComponentY));
+	auto vertZ = *std::min_element(std::begin(vertexComponentZ), std::end(vertexComponentZ));
 
 
-	return m_TempLowest;
+	return glm::vec3(vertX, vertY, vertZ);
+}
+
+void ModelMesh::GenerateQuadData()
+{
+	m_VertData.clear();
+	m_IndicesData.clear();
+
+	std::vector<glm::vec3>vertPositions =
+	{
+		// x,y,z          
+		glm::vec3(-5.0f, 0.0f, 0.0f), 
+		glm::vec3( 5.0f, 0.0f, 0.0f),
+		glm::vec3( 5.0f, 0.0f, 10.0f),
+		glm::vec3(-5.0f, 0.0f, 20.0f)
+	};
+
+
+	std::vector<glm::vec3>vertNormals =
+	{
+		// normals
+		glm::vec3(0.0f, 1.0f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f)
+	};
+
+
+	std::vector<uint32_t> indices =
+	{
+		0, 1, 2,
+		2, 3, 0
+	};
+
+	CombineVertData(vertPositions, vertNormals, indices, indices);
+
 }
 
 std::vector<uint32_t> ModelMesh::GetIndecies()
@@ -159,5 +214,7 @@ glm::vec3 ModelMesh::GetLowestVert() const
 {
 	return m_LowestVerticesValue;
 }
+
+
 
 

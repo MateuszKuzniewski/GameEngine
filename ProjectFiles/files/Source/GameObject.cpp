@@ -2,9 +2,10 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
-
-GameObject::GameObject() : transform(glm::mat4(1.0f))
+GameObject::GameObject(const std::string& path) : transform(glm::mat4(1.0f))
 {
+    m_ModelMesh = std::make_unique<ModelMesh>(path);
+    GenerateBuffers(m_ModelMesh->GetVertices(), m_ModelMesh->GetIndecies());
     UpdateTransform();
 }
 
@@ -47,6 +48,10 @@ void GameObject::GenerateBuffers(const std::vector<float>& vertices, const std::
      m_VertexArray->AddIndexBuffer(m_IndexBuffer);
 }
 
+void GameObject::OnCollision()
+{
+}
+
 void GameObject::Gravity()
 {
     if (!Properties.Gravity)
@@ -58,10 +63,11 @@ void GameObject::Gravity()
     position += deltaSpeed * glm::vec3(0.0f, -1.0f, 0.0f);
 }
 
-void GameObject::BoxCollider()
+void GameObject::BoxCollider(const std::shared_ptr<GameObject>& gobj)
 {
     if (!Properties.Collisions)
         return;
+
 
 }
 
@@ -71,38 +77,17 @@ void GameObject::UpdateTransform()
 }
 
 
-void GameObject::LoadModel(const std::string& path)
-{
-    // Create Mesh
-    m_ModelMesh = std::make_unique<ModelMesh>(path);
-    GenerateBuffers(m_ModelMesh->GetVertices(), m_ModelMesh->GetIndecies());
-}
-
 void GameObject::GenerateQuad()
 {
-    std::vector<float> vertices =
-    {
-         // x,y,z           // normals
-        -5.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f,
-         5.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f,
-         5.0f, 0.0f, 10.0f,  0.0f, 1.0f, 0.0f,
-        -5.0f, 0.0f, 10.0f,  0.0f, 1.0f, 0.0f
-    };
-
-    std::vector<uint32_t> indices =
-    {
-        0, 1, 2,
-        2, 3, 0
-    };
-
-    GenerateBuffers(vertices, indices);
+    m_ModelMesh = std::make_unique<ModelMesh>();
+    m_ModelMesh->GenerateQuadData();
+    GenerateBuffers(m_ModelMesh->GetVertices(), m_ModelMesh->GetIndecies());
 
 }
 
 void GameObject::Update()
 {
     Gravity();
-    BoxCollider();
     UpdateTransform();
 }
 
@@ -138,4 +123,19 @@ float GameObject::GetDepth() const
 {
     float depth = glm::distance(m_ModelMesh->GetLowestVert().z, m_ModelMesh->GetHighestVert().z);
     return depth;
+}
+
+glm::vec2 GameObject::GetWidthPoints() const
+{
+    return glm::vec2(m_ModelMesh->GetLowestVert().x + position.x, m_ModelMesh->GetHighestVert().x + position.x);
+}
+
+glm::vec2 GameObject::GetHeightPoints() const
+{
+    return glm::vec2(m_ModelMesh->GetLowestVert().y + position.y, m_ModelMesh->GetHighestVert().y + position.y);
+}
+
+glm::vec2 GameObject::GetDepthPoints() const
+{
+    return glm::vec2(m_ModelMesh->GetLowestVert().z + position.z, m_ModelMesh->GetHighestVert().z + position.z);
 }

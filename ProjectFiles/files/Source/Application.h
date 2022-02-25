@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "Window.h"
 #include "Texture.h"
+#include "PhysicsWorld.h"
 
 class Application
 {
@@ -22,6 +23,7 @@ private:
 	std::shared_ptr<GameObject> m_MonkeyHead2;
 	std::shared_ptr<GameObject> m_Ground;
 	std::unique_ptr<Renderer> m_Renderer;
+	std::unique_ptr<PhysicsWorld> m_PhysicsWorld;
 	std::string WorkingDir;
 
 	std::vector<std::shared_ptr<GameObject>> m_ActiveGameObjects;
