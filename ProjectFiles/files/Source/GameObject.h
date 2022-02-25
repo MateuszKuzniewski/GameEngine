@@ -26,7 +26,7 @@ public:
 	~GameObject();
 
 	void SetPosition(float x, float y, float z);
-	void BoxCollider(const std::shared_ptr<GameObject>& gobj);
+	void BoxCollider(const std::shared_ptr<GameObject>& gameObject);
 	void GenerateQuad();
 	void Update();
 

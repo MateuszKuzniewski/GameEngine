@@ -20,7 +20,7 @@ public:
 
 private:
 
-	void CombineVertData(std::vector<glm::vec3>& Vertices, std::vector<glm::vec3>& Normals, std::vector<uint32_t>& VertIndices, std::vector<uint32_t>& NormalIndices);
+	void CombineVertData(std::vector<glm::vec3>& vertices, std::vector<glm::vec3>& normals, std::vector<uint32_t>& vertIndices, std::vector<uint32_t>& normalIndices);
 	glm::vec3 CheckForHighestValue(const std::vector<glm::vec3>& vector);
 	glm::vec3 CheckForLowestValue(const std::vector<glm::vec3>& vector);
 

@@ -63,7 +63,7 @@ void GameObject::Gravity()
     position += deltaSpeed * glm::vec3(0.0f, -1.0f, 0.0f);
 }
 
-void GameObject::BoxCollider(const std::shared_ptr<GameObject>& gobj)
+void GameObject::BoxCollider(const std::shared_ptr<GameObject>& gameObject)
 {
     if (!Properties.Collisions)
         return;
