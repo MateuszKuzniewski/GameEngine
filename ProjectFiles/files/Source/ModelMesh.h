@@ -26,9 +26,7 @@ private:
 
 private:
 
-	uint32_t m_RendererID;
 	glm::vec3 m_HighestVerticesValue, m_LowestVerticesValue;
-	glm::vec3 m_TempLowest = { 100.0f, 100.0f, 100.0f };
 
 	std::vector<uint32_t> m_VertexIndices, m_TextureIndices, m_NormalIndices;
 	std::vector<glm::vec3> m_Vertices, m_Normals;

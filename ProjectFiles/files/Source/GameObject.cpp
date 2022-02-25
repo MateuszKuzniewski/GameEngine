@@ -27,10 +27,8 @@ void GameObject::GenerateBuffers(const std::vector<float>& vertices, const std::
 {
     m_VertexArray = std::make_unique<VertexArray>();
 
-     // Vertex buffer object
      m_VertexBuffer = std::make_shared<VertexBuffer>(&vertices[0], vertices.size() * sizeof(*vertices.data()));
 
-     // Create layout
      BufferLayout layout = {
          { ShaderDataType::Float3, "a_Position" },
          { ShaderDataType::Float3, "a_Normal"   }
@@ -39,11 +37,9 @@ void GameObject::GenerateBuffers(const std::vector<float>& vertices, const std::
 
      };
 
-     // Vertex Array Object
      m_VertexBuffer->SetLayout(layout);
      m_VertexArray->AddVertexBuffer(m_VertexBuffer);
 
-     // Index Buffer Object
      m_IndexBuffer = std::make_shared<IndexBuffer>(&indices[0], indices.size());
      m_VertexArray->AddIndexBuffer(m_IndexBuffer);
 }
