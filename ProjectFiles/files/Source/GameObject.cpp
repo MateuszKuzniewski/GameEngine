@@ -71,7 +71,6 @@ void GameObject::Update()
     UpdateTransform();
 }
 
-
 std::shared_ptr<IndexBuffer> GameObject::GetIndexBuffer() const
 {
     return m_IndexBuffer;
@@ -90,6 +89,11 @@ glm::mat4 GameObject::GetTransform() const
 glm::vec3 GameObject::GetPosition() const
 {
     return position;
+}
+
+glm::vec3 GameObject::GetVelocity() const
+{
+    return velocity;
 }
 
 float GameObject::GetWidth() const

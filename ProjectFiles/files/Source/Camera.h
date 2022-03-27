@@ -49,7 +49,7 @@ private:
 	Camera();
 	~Camera();
 
-	glm::vec3 m_Position = { 0.0f, 0.0f, 2.0f };
+	glm::vec3 m_Position = { 0.0f, 0.0f, 10.0f };
 	glm::vec3 m_FocalPoint = { 0.0f, 0.0f, 0.0f };
 	glm::vec3 m_UpVector = { 0.0f, 1.0f, 0.0f };
 	glm::vec3 m_RightVector = { 1.0f, 0.0f, 0.0f };

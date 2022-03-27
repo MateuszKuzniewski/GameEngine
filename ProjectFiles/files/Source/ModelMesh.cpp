@@ -175,7 +175,7 @@ void ModelMesh::GenerateQuadData()
 		glm::vec3(-5.0f, 0.0f, 0.0f), 
 		glm::vec3( 5.0f, 0.0f, 0.0f),
 		glm::vec3( 5.0f, 0.0f, 10.0f),
-		glm::vec3(-5.0f, 0.0f, 20.0f)
+		glm::vec3(-5.0f, 0.0f, 10.0f)
 	};
 
 

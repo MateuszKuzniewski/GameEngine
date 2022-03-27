@@ -101,15 +101,22 @@ void Application::Run()
     m_MonkeyHead->SetPosition(0.0f, 5.0f, 0.0f);
     m_MonkeyHead->Properties.Gravity = true;
 
-    m_MonkeyHead2 = std::make_shared<GameObject>(assetPath + "monkey.obj", "MonkeyHead_2");
-    m_MonkeyHead2->SetPosition(0.0f, 0.0f, 0.0f);
-    m_MonkeyHead2->Properties.Gravity = true;
+ /*   m_MonkeyHead2 = std::make_shared<GameObject>(assetPath + "monkey.obj", "MonkeyHead_2");
+    m_MonkeyHead2->SetPosition(-2.0f, 0.0f, 0.0f);
+    m_MonkeyHead2->Properties.Gravity = true;*/
 
     m_Ground = std::make_shared<GameObject>();
     m_Ground->SetName("Ground");
     m_Ground->GenerateQuad();
     m_Ground->SetPosition(0.0f, -5.0f, -5.0f);
     m_Ground->Properties.Gravity = false;
+
+
+    m_Ground2 = std::make_shared<GameObject>();
+    m_Ground2->SetName("Ground_2");
+    m_Ground2->GenerateQuad();
+    m_Ground2->SetPosition(0.0f, 7.0f, -5.0f);
+    m_Ground2->Properties.Gravity = false;
 
 
     // Texture
@@ -120,8 +127,9 @@ void Application::Run()
     m_Shader = std::make_shared<Shader>(vertexShaderSrc, fragmentShaderSrc);
 
     m_PhysicsWorld->Add(m_MonkeyHead);
-    m_PhysicsWorld->Add(m_MonkeyHead2);
+    //m_PhysicsWorld->Add(m_MonkeyHead2);
     m_PhysicsWorld->Add(m_Ground);
+    m_PhysicsWorld->Add(m_Ground2);
 
     while (!glfwWindowShouldClose(m_AppWindow->GetWindow()))
     {
@@ -131,8 +139,9 @@ void Application::Run()
 
         m_Renderer->Setup();
         m_Renderer->Submit(m_MonkeyHead, m_Shader, m_CameraInstance);
-        m_Renderer->Submit(m_MonkeyHead2, m_Shader, m_CameraInstance);
+        //m_Renderer->Submit(m_MonkeyHead2, m_Shader, m_CameraInstance);
         m_Renderer->Submit(m_Ground, m_Shader, m_CameraInstance);
+        m_Renderer->Submit(m_Ground2, m_Shader, m_CameraInstance);
 
 
         m_PhysicsWorld->Update();

@@ -1,6 +1,7 @@
 #include "PhysicsWorld.h"
 #include <iostream>
 #include <algorithm>
+#include <time.h>
 
 PhysicsWorld::PhysicsWorld()
 {
@@ -34,20 +35,27 @@ void PhysicsWorld::CheckCollision(const std::shared_ptr<GameObject>& gameObject_
 		(gameObject_A->GetHeightPoints().x <= gameObject_B->GetHeightPoints().y && gameObject_A->GetHeightPoints().y >= gameObject_B->GetHeightPoints().x) &&
 		(gameObject_A->GetDepthPoints().x  <= gameObject_B->GetDepthPoints().y  && gameObject_A->GetDepthPoints().y  >= gameObject_B->GetDepthPoints().x))
 	{
-
-		std::cout << "Collision: " << gameObject_A->GetName() << " + " << gameObject_B->GetName() << std::endl;
+		gameObject_A->Properties.hasCollided = true;
+		gameObject_B->Properties.hasCollided = true;
+		//std::cout << "Collision: " << gameObject_A->GetName() << " + " << gameObject_B->GetName() << std::endl;
+		CollisionResponse(gameObject_A, gameObject_B);
+	}
+	else
+	{
+		gameObject_A->Properties.hasCollided = false;
+		gameObject_B->Properties.hasCollided = false;
 	}
 }
 
 void PhysicsWorld::ApplyGravity(const std::shared_ptr<GameObject>& gameObject)
 {
 
-	float g = 0.001f;
 	glm::vec3 position = glm::vec3(0.0f);
 
-	const float deltaSpeed = g * Time::GetDeltaTime();
+	const float deltaSpeed = m_Gravity;
 	position += deltaSpeed * glm::vec3(0.0f, -1.0f, 0.0f);
 	gameObject->SetPosition(position.x, position.y, position.z);
+
 }
 
 void PhysicsWorld::UpdateActiveObjects()
@@ -100,5 +108,18 @@ void PhysicsWorld::CollisionBroadSearch()
 		}
 		activeList.push_back(m_ActiveObjectsList[i]);
 	}
+}
+
+void PhysicsWorld::CollisionResponse(const std::shared_ptr<GameObject>& gameObject_A, const std::shared_ptr<GameObject>& gameObject_B)
+{
+	if (gameObject_A->Properties.hasCollided)
+	{
+		m_Gravity *= -1;
+	}
+}
+
+void PhysicsWorld::AddImpulse(const std::shared_ptr<GameObject>& gameObject, glm::vec3 direction, float force)
+{
+	
 }
 

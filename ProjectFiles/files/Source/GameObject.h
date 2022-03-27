@@ -15,6 +15,7 @@ struct Properties
 {
 	bool Gravity = true;
 	bool Collisions = true;
+	bool hasCollided = false;
 };
 
 class GameObject
@@ -30,6 +31,7 @@ public:
 	void GenerateQuad();
 	void Update();
 
+
 	float GetWidth() const;
 	float GetHeight() const;
 	float GetDepth() const;
@@ -37,6 +39,7 @@ public:
 
 	glm::mat4 GetTransform() const;
 	glm::vec3 GetPosition() const;
+	glm::vec3 GetVelocity() const;
 	glm::vec2 GetWidthPoints() const;
 	glm::vec2 GetHeightPoints() const;
 	glm::vec2 GetDepthPoints() const;
@@ -60,6 +63,7 @@ private:
 
 	glm::mat4 transform = glm::mat4(1.0f);
 	glm::vec3 position = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 velocity = { 0.0f, 0.0f, 0.0f };
 	std::string m_Name = "GameObject";
 
 };

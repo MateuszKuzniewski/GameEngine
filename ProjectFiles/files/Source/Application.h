@@ -22,6 +22,7 @@ private:
 	std::shared_ptr<GameObject> m_MonkeyHead;
 	std::shared_ptr<GameObject> m_MonkeyHead2;
 	std::shared_ptr<GameObject> m_Ground;
+	std::shared_ptr<GameObject> m_Ground2;
 	std::unique_ptr<Renderer> m_Renderer;
 	std::unique_ptr<PhysicsWorld> m_PhysicsWorld;
 	std::string WorkingDir;
