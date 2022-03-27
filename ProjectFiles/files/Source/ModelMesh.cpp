@@ -169,7 +169,7 @@ void ModelMesh::GenerateQuadData()
 	m_VertData.clear();
 	m_IndicesData.clear();
 
-	std::vector<glm::vec3>vertPositions =
+	std::vector<glm::vec3> vertPositions =
 	{
 		// x,y,z          
 		glm::vec3(-5.0f, 0.0f, 0.0f), 
@@ -179,7 +179,7 @@ void ModelMesh::GenerateQuadData()
 	};
 
 
-	std::vector<glm::vec3>vertNormals =
+	std::vector<glm::vec3> vertNormals =
 	{
 		// normals
 		glm::vec3(0.0f, 1.0f, 0.0f),

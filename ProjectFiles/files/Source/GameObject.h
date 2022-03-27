@@ -22,19 +22,21 @@ class GameObject
 public:
 
 	GameObject() = default;
-	GameObject(const std::string& path);
+	GameObject(const std::string& path, const std::string& name);
 	~GameObject();
 
 	void SetPosition(float x, float y, float z);
-	void BoxCollider(const std::shared_ptr<GameObject>& gameObject);
+	void SetName(const std::string& name);
 	void GenerateQuad();
 	void Update();
 
 	float GetWidth() const;
 	float GetHeight() const;
 	float GetDepth() const;
+	std::string GetName() const;
 
 	glm::mat4 GetTransform() const;
+	glm::vec3 GetPosition() const;
 	glm::vec2 GetWidthPoints() const;
 	glm::vec2 GetHeightPoints() const;
 	glm::vec2 GetDepthPoints() const;
@@ -47,8 +49,6 @@ public:
 private:
 
 	void GenerateBuffers(const std::vector<float>& vertices, const std::vector<uint32_t>& indices);
-	void OnCollision();
-	void Gravity();
 	void UpdateTransform();
 
 private:
@@ -58,8 +58,9 @@ private:
 	std::shared_ptr<VertexArray> m_VertexArray;
 	std::unique_ptr<ModelMesh> m_ModelMesh;
 
-	glm::mat4 transform = glm::mat4(0.0f);
+	glm::mat4 transform = glm::mat4(1.0f);
 	glm::vec3 position = { 0.0f, 0.0f, 0.0f };
+	std::string m_Name = "GameObject";
 
 };
 

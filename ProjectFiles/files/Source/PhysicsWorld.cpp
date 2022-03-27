@@ -1,17 +1,30 @@
 #include "PhysicsWorld.h"
 #include <iostream>
+#include <algorithm>
 
 PhysicsWorld::PhysicsWorld()
 {
+	
 }
 
 PhysicsWorld::~PhysicsWorld()
 {
 }
 
-void PhysicsWorld::Update(const std::shared_ptr<GameObject>& gameObject_A, const std::shared_ptr<GameObject>& gameObject_B)
+void PhysicsWorld::Update()
 {
-	CheckCollision(gameObject_A, gameObject_B);
+	UpdateActiveObjects();
+	CollisionBroadSearch();
+}
+
+void PhysicsWorld::Add(const std::shared_ptr<GameObject>& gameObject)
+{
+	if (gameObject.get() == nullptr)
+	{
+		std::cout << "PHYSICS WORLD: Trying to add object which is null" << std::endl;
+		exit(1);
+	}
+	m_ActiveObjectsList.push_back(gameObject);
 }
 
 
@@ -21,6 +34,71 @@ void PhysicsWorld::CheckCollision(const std::shared_ptr<GameObject>& gameObject_
 		(gameObject_A->GetHeightPoints().x <= gameObject_B->GetHeightPoints().y && gameObject_A->GetHeightPoints().y >= gameObject_B->GetHeightPoints().x) &&
 		(gameObject_A->GetDepthPoints().x  <= gameObject_B->GetDepthPoints().y  && gameObject_A->GetDepthPoints().y  >= gameObject_B->GetDepthPoints().x))
 	{
-		std::cout << "Collision" << std::endl;
+
+		std::cout << "Collision: " << gameObject_A->GetName() << " + " << gameObject_B->GetName() << std::endl;
 	}
 }
+
+void PhysicsWorld::ApplyGravity(const std::shared_ptr<GameObject>& gameObject)
+{
+
+	float g = 0.001f;
+	glm::vec3 position = glm::vec3(0.0f);
+
+	const float deltaSpeed = g * Time::GetDeltaTime();
+	position += deltaSpeed * glm::vec3(0.0f, -1.0f, 0.0f);
+	gameObject->SetPosition(position.x, position.y, position.z);
+}
+
+void PhysicsWorld::UpdateActiveObjects()
+{
+	for (auto gameObject : m_ActiveObjectsList)
+	{
+		gameObject->Update();
+
+		if (gameObject->Properties.Gravity)
+			ApplyGravity(gameObject);
+	}
+}
+
+std::vector<std::shared_ptr<GameObject>> PhysicsWorld::SortByMinX(std::vector<std::shared_ptr<GameObject>>& list)
+{
+	std::sort(list.begin(), list.end(),
+		[=](std::shared_ptr<GameObject> object_A, std::shared_ptr<GameObject> object_B) -> bool 
+		{
+			return object_A->GetWidthPoints().x < object_B->GetWidthPoints().x; 
+		});
+
+
+	return list;
+}
+
+
+void PhysicsWorld::CollisionBroadSearch()
+{
+	m_ActiveObjectsList = SortByMinX(m_ActiveObjectsList);
+	std::vector<std::shared_ptr<GameObject>> activeList;
+
+
+	for (int i = 0; i < m_ActiveObjectsList.size(); ++i)
+	{
+		for (int j = 0; j < activeList.size(); ++j)
+		{
+			auto pos1 = m_ActiveObjectsList[i]->GetWidthPoints().x;
+			auto pos2 = activeList[j]->GetWidthPoints().y;
+
+			if (pos1 < pos2)
+			{
+				CheckCollision(m_ActiveObjectsList[i], activeList[j]);
+				
+			}
+			else
+			{
+				activeList.erase(activeList.begin() + j);
+				j--;
+			}
+		}
+		activeList.push_back(m_ActiveObjectsList[i]);
+	}
+}
+

@@ -6,6 +6,7 @@
 Application::Application()
 {
     m_AppWindow = new Window(1280, 720, "App", NULL, NULL);
+    
 
 
 }
@@ -77,11 +78,12 @@ void Application::Run()
         float diff = max(dot(norm, lightDir), 0.0);
         vec3 diffuseLight = diff * lightColor * diffuseLightStrength;
         
-        // specular
+        // speculard
         vec3 viewDir = normalize(u_ViewPos - fragPos);
         vec3 reflectDir = reflect(-lightDir, norm);
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
         vec3 specularLight = specularLightStrength * spec * lightColor;
+        
 
         vec3 result = (ambientLight + diffuseLight + specularLight) * objectColor;
 
@@ -91,17 +93,20 @@ void Application::Run()
                 FragColor = vec4(result, 1.0f);
         }
     )";
+    m_PhysicsWorld = std::make_unique<PhysicsWorld>();
+    m_Renderer = std::make_unique<Renderer>();
 
     
-    m_MonkeyHead = std::make_shared<GameObject>(assetPath + "monkey.obj");
+    m_MonkeyHead = std::make_shared<GameObject>(assetPath + "monkey.obj", "MonkeyHead_1");
     m_MonkeyHead->SetPosition(0.0f, 5.0f, 0.0f);
     m_MonkeyHead->Properties.Gravity = true;
 
-    m_MonkeyHead2 = std::make_shared<GameObject>(assetPath + "monkey.obj");
+    m_MonkeyHead2 = std::make_shared<GameObject>(assetPath + "monkey.obj", "MonkeyHead_2");
     m_MonkeyHead2->SetPosition(0.0f, 0.0f, 0.0f);
-    m_MonkeyHead2->Properties.Gravity = false;
+    m_MonkeyHead2->Properties.Gravity = true;
 
     m_Ground = std::make_shared<GameObject>();
+    m_Ground->SetName("Ground");
     m_Ground->GenerateQuad();
     m_Ground->SetPosition(0.0f, -5.0f, -5.0f);
     m_Ground->Properties.Gravity = false;
@@ -114,9 +119,9 @@ void Application::Run()
     // Shaders 
     m_Shader = std::make_shared<Shader>(vertexShaderSrc, fragmentShaderSrc);
 
-    m_ActiveGameObjects.push_back(m_MonkeyHead);
-    m_ActiveGameObjects.push_back(m_MonkeyHead2);
-    m_ActiveGameObjects.push_back(m_Ground);
+    m_PhysicsWorld->Add(m_MonkeyHead);
+    m_PhysicsWorld->Add(m_MonkeyHead2);
+    m_PhysicsWorld->Add(m_Ground);
 
     while (!glfwWindowShouldClose(m_AppWindow->GetWindow()))
     {
@@ -128,13 +133,9 @@ void Application::Run()
         m_Renderer->Submit(m_MonkeyHead, m_Shader, m_CameraInstance);
         m_Renderer->Submit(m_MonkeyHead2, m_Shader, m_CameraInstance);
         m_Renderer->Submit(m_Ground, m_Shader, m_CameraInstance);
-      
-        for (auto gameObject : m_ActiveGameObjects)
-        {   
-            gameObject->Update();
-        }
-        m_PhysicsWorld->Update(m_MonkeyHead, m_Ground);
-       
+
+
+        m_PhysicsWorld->Update();
 
         /* Swap front and back buffers */
         glfwSwapBuffers(m_AppWindow->GetWindow());

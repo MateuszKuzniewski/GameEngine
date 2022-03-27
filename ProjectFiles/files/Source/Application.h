@@ -26,7 +26,5 @@ private:
 	std::unique_ptr<PhysicsWorld> m_PhysicsWorld;
 	std::string WorkingDir;
 
-	std::vector<std::shared_ptr<GameObject>> m_ActiveGameObjects;
-
 };
 

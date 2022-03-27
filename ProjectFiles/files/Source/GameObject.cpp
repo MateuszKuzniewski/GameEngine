@@ -2,8 +2,9 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
-GameObject::GameObject(const std::string& path) : transform(glm::mat4(1.0f))
+GameObject::GameObject(const std::string& path, const std::string& name) : transform(glm::mat4(1.0f))
 {
+    m_Name = name;
     m_ModelMesh = std::make_unique<ModelMesh>(path);
     GenerateBuffers(m_ModelMesh->GetVertices(), m_ModelMesh->GetIndecies());
     UpdateTransform();
@@ -21,13 +22,22 @@ void GameObject::SetPosition(float x, float y, float z)
     position += glm::vec3(x, y, z);
 }
 
-
+void GameObject::SetName(const std::string& name)
+{
+    m_Name = name;
+}
 
 void GameObject::GenerateBuffers(const std::vector<float>& vertices, const std::vector<uint32_t>& indices)
 {
-    m_VertexArray = std::make_unique<VertexArray>();
+    if (vertices.size() <= 0 || indices.size() <= 0)
+    {
+        std::cout << "GAME OBJECT: Cannot Generate Buffers... Missing Vertices or Indices Data" << std::endl;
+        exit(1);
+    }
 
+     m_VertexArray = std::make_unique<VertexArray>();
      m_VertexBuffer = std::make_shared<VertexBuffer>(&vertices[0], vertices.size() * sizeof(*vertices.data()));
+     m_IndexBuffer = std::make_shared<IndexBuffer>(&indices[0], indices.size());
 
      BufferLayout layout = {
          { ShaderDataType::Float3, "a_Position" },
@@ -39,32 +49,7 @@ void GameObject::GenerateBuffers(const std::vector<float>& vertices, const std::
 
      m_VertexBuffer->SetLayout(layout);
      m_VertexArray->AddVertexBuffer(m_VertexBuffer);
-
-     m_IndexBuffer = std::make_shared<IndexBuffer>(&indices[0], indices.size());
      m_VertexArray->AddIndexBuffer(m_IndexBuffer);
-}
-
-void GameObject::OnCollision()
-{
-}
-
-void GameObject::Gravity()
-{
-    if (!Properties.Gravity)
-        return;
-
-    float g = 0.001f;
-
-    const float deltaSpeed = g * Time::GetDeltaTime();
-    position += deltaSpeed * glm::vec3(0.0f, -1.0f, 0.0f);
-}
-
-void GameObject::BoxCollider(const std::shared_ptr<GameObject>& gameObject)
-{
-    if (!Properties.Collisions)
-        return;
-
-
 }
 
 void GameObject::UpdateTransform()
@@ -83,7 +68,6 @@ void GameObject::GenerateQuad()
 
 void GameObject::Update()
 {
-    Gravity();
     UpdateTransform();
 }
 
@@ -103,6 +87,11 @@ glm::mat4 GameObject::GetTransform() const
     return transform;
 }
 
+glm::vec3 GameObject::GetPosition() const
+{
+    return position;
+}
+
 float GameObject::GetWidth() const
 {
     float width = glm::distance(m_ModelMesh->GetLowestVert().x, m_ModelMesh->GetHighestVert().x);
@@ -119,6 +108,11 @@ float GameObject::GetDepth() const
 {
     float depth = glm::distance(m_ModelMesh->GetLowestVert().z, m_ModelMesh->GetHighestVert().z);
     return depth;
+}
+
+std::string GameObject::GetName() const
+{
+    return m_Name;
 }
 
 glm::vec2 GameObject::GetWidthPoints() const
