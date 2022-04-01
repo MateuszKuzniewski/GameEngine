@@ -20,85 +20,17 @@ void Application::Run()
 
     std::string projectPath = std::filesystem::current_path().parent_path().string(); 
     std::string assetPath = projectPath + "\\Resources\\";
+    std::string shaderPath = projectPath + "\\files\\" + "\\Shaders\\";
 
-    std::string vertexShaderSrc = R"(
-        #version 330 core    
- 
-        layout (location = 0) in vec3 a_Position;
-        layout (location = 1) in vec3 a_Normal; 
-        layout (location = 2) in vec2 a_TexCoord; 
+    std::string vertexShaderSrc = shaderPath + "basic.vert";
+    std::string fragmentShaderSrc = shaderPath + "basic.frag";
 
-
-        out vec2 texCoord;
-        out vec3 outNormal;
-        out vec3 fragPos;
-
-        uniform mat4 u_ViewProjection;
-        uniform mat4 u_ViewMatrix;
-        uniform mat4 u_Transform;
-
-        void main()
-        {
-            texCoord = a_TexCoord;
-            outNormal = a_Normal;
-
-
-            gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
-            fragPos = vec3(u_ViewMatrix * u_Transform * vec4(a_Position, 1.0));
-        }
-    )";
-
-
-    std::string fragmentShaderSrc = R"(
-        #version 330 core
-          
-        out vec4 FragColor;
-
-        in vec2 texCoord;
-        in vec3 outNormal;
-        in vec3 fragPos;
-
-        uniform sampler2D u_Texture;
-        uniform mat4 u_ViewProjection;
-        uniform vec3 u_ViewPos;
-
-        float ambientLightStrength = 0.2f;
-        float diffuseLightStrength = 0.6f;
-        float specularLightStrength = 0.5f;
-
-        vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);
-        vec3 objectColor = vec3(0.5f, 1.0f, 0.5f);        
-        vec3 lightPos = vec3(1.2f, 1.0f, 2.0f);
-
-        vec3 ambientLight = lightColor * ambientLightStrength;
-
-        // diffuse
-        vec3 norm = normalize(outNormal);
-        vec3 lightDir = normalize(lightPos - fragPos);
-        float diff = max(dot(norm, lightDir), 0.0);
-        vec3 diffuseLight = diff * lightColor * diffuseLightStrength;
-        
-        // speculard
-        vec3 viewDir = normalize(u_ViewPos - fragPos);
-        vec3 reflectDir = reflect(-lightDir, norm);
-        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-        vec3 specularLight = specularLightStrength * spec * lightColor;
-        
-
-        vec3 result = (ambientLight + diffuseLight + specularLight) * objectColor;
-
-        void main()
-        {
-             // FragColor = texture(u_Texture, texCoord);
-                FragColor = vec4(result, 1.0f);
-        }
-    )";
     m_PhysicsWorld = std::make_unique<PhysicsWorld>();
     m_Renderer = std::make_unique<Renderer>();
 
     
     m_MonkeyHead = std::make_shared<GameObject>(assetPath + "monkey.obj", "MonkeyHead_1");
-    m_MonkeyHead->SetPosition(0.0f, 5.0f, 0.0f);
+    m_MonkeyHead->Transform.position = glm::vec3(0.0f, 5.0f, 0.0f);
     m_MonkeyHead->Properties.Gravity = true;
 
  /*   m_MonkeyHead2 = std::make_shared<GameObject>(assetPath + "monkey.obj", "MonkeyHead_2");
@@ -108,14 +40,14 @@ void Application::Run()
     m_Ground = std::make_shared<GameObject>();
     m_Ground->SetName("Ground");
     m_Ground->GenerateQuad();
-    m_Ground->SetPosition(0.0f, -5.0f, -5.0f);
+    m_Ground->Transform.position = glm::vec3(0.0f, -5.0f, -5.0f);
     m_Ground->Properties.Gravity = false;
 
 
     m_Ground2 = std::make_shared<GameObject>();
     m_Ground2->SetName("Ground_2");
     m_Ground2->GenerateQuad();
-    m_Ground2->SetPosition(0.0f, 7.0f, -5.0f);
+    m_Ground2->Transform.position = glm::vec3(0.0f, 7.0f, -5.0f);
     m_Ground2->Properties.Gravity = false;
 
 

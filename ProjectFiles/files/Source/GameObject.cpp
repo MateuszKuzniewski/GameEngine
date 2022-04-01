@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
-GameObject::GameObject(const std::string& path, const std::string& name) : transform(glm::mat4(1.0f))
+GameObject::GameObject(const std::string& path, const std::string& name) : m_Transform(glm::mat4(1.0f))
 {
     m_Name = name;
     m_ModelMesh = std::make_unique<ModelMesh>(path);
@@ -15,11 +15,6 @@ GameObject::~GameObject()
     m_IndexBuffer->Unbind();
     m_VertexBuffer->Unbind();
     m_VertexArray->Unbind();
-}
-
-void GameObject::SetPosition(float x, float y, float z)
-{
-    position += glm::vec3(x, y, z);
 }
 
 void GameObject::SetName(const std::string& name)
@@ -54,9 +49,8 @@ void GameObject::GenerateBuffers(const std::vector<float>& vertices, const std::
 
 void GameObject::UpdateTransform()
 {
-    transform = glm::translate(glm::mat4(1.0f), position);
+    m_Transform = glm::translate(glm::mat4(1.0f), Transform.position);
 }
-
 
 void GameObject::GenerateQuad()
 {
@@ -83,18 +77,9 @@ std::shared_ptr<VertexArray> GameObject::GetVertexArray() const
 
 glm::mat4 GameObject::GetTransform() const
 {
-    return transform;
+    return m_Transform;
 }
 
-glm::vec3 GameObject::GetPosition() const
-{
-    return position;
-}
-
-glm::vec3 GameObject::GetVelocity() const
-{
-    return velocity;
-}
 
 float GameObject::GetWidth() const
 {
@@ -121,15 +106,15 @@ std::string GameObject::GetName() const
 
 glm::vec2 GameObject::GetWidthPoints() const
 {
-    return glm::vec2(m_ModelMesh->GetLowestVert().x + position.x, m_ModelMesh->GetHighestVert().x + position.x);
+    return glm::vec2(m_ModelMesh->GetLowestVert().x + Transform.position.x, m_ModelMesh->GetHighestVert().x + Transform.position.x);
 }
 
 glm::vec2 GameObject::GetHeightPoints() const
 {
-    return glm::vec2(m_ModelMesh->GetLowestVert().y + position.y, m_ModelMesh->GetHighestVert().y + position.y);
+    return glm::vec2(m_ModelMesh->GetLowestVert().y + Transform.position.y, m_ModelMesh->GetHighestVert().y + Transform.position.y);
 }
 
 glm::vec2 GameObject::GetDepthPoints() const
 {
-    return glm::vec2(m_ModelMesh->GetLowestVert().z + position.z, m_ModelMesh->GetHighestVert().z + position.z);
+    return glm::vec2(m_ModelMesh->GetLowestVert().z + Transform.position.z, m_ModelMesh->GetHighestVert().z + Transform.position.z);
 }

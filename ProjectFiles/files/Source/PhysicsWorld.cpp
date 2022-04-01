@@ -38,7 +38,7 @@ void PhysicsWorld::CheckCollision(const std::shared_ptr<GameObject>& gameObject_
 		gameObject_A->Properties.hasCollided = true;
 		gameObject_B->Properties.hasCollided = true;
 		//std::cout << "Collision: " << gameObject_A->GetName() << " + " << gameObject_B->GetName() << std::endl;
-		CollisionResponse(gameObject_A, gameObject_B);
+		CollisionResolution(gameObject_A, gameObject_B);
 	}
 	else
 	{
@@ -50,11 +50,11 @@ void PhysicsWorld::CheckCollision(const std::shared_ptr<GameObject>& gameObject_
 void PhysicsWorld::ApplyGravity(const std::shared_ptr<GameObject>& gameObject)
 {
 
-	glm::vec3 position = glm::vec3(0.0f);
+	glm::vec3 dir = glm::vec3(0.0f);
 
 	const float deltaSpeed = m_Gravity;
-	position += deltaSpeed * glm::vec3(0.0f, -1.0f, 0.0f);
-	gameObject->SetPosition(position.x, position.y, position.z);
+	dir += deltaSpeed * glm::vec3(0.0f, -1.0f, 0.0f);
+	gameObject->Transform.position += dir;
 
 }
 
@@ -62,6 +62,7 @@ void PhysicsWorld::UpdateActiveObjects()
 {
 	for (auto gameObject : m_ActiveObjectsList)
 	{
+		// Updates Transform
 		gameObject->Update();
 
 		if (gameObject->Properties.Gravity)
@@ -87,13 +88,13 @@ void PhysicsWorld::CollisionBroadSearch()
 	m_ActiveObjectsList = SortByMinX(m_ActiveObjectsList);
 	std::vector<std::shared_ptr<GameObject>> activeList;
 
-
+	// sweep and prune 
 	for (int i = 0; i < m_ActiveObjectsList.size(); ++i)
 	{
 		for (int j = 0; j < activeList.size(); ++j)
 		{
-			auto pos1 = m_ActiveObjectsList[i]->GetWidthPoints().x;
-			auto pos2 = activeList[j]->GetWidthPoints().y;
+			auto pos1 = m_ActiveObjectsList[i]->GetWidthPoints().x; // min
+			auto pos2 = activeList[j]->GetWidthPoints().y;			// max
 
 			if (pos1 < pos2)
 			{
@@ -110,16 +111,18 @@ void PhysicsWorld::CollisionBroadSearch()
 	}
 }
 
-void PhysicsWorld::CollisionResponse(const std::shared_ptr<GameObject>& gameObject_A, const std::shared_ptr<GameObject>& gameObject_B)
+void PhysicsWorld::CollisionResolution(const std::shared_ptr<GameObject>& gameObject_A, const std::shared_ptr<GameObject>& gameObject_B)
 {
+	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+	float force = 2.0f;
 	if (gameObject_A->Properties.hasCollided)
 	{
-		m_Gravity *= -1;
+		AddImpulse(gameObject_A, up, force);
 	}
 }
 
-void PhysicsWorld::AddImpulse(const std::shared_ptr<GameObject>& gameObject, glm::vec3 direction, float force)
+void PhysicsWorld::AddImpulse(const std::shared_ptr<GameObject>& gameObject, const glm::vec3& direction, float force)
 {
-	
+	gameObject->Transform.direction += direction * force * Time::GetDeltaTime();
 }
 

@@ -2,10 +2,41 @@
 #include "GL/glew.h"
 #include <vector>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
-Shader::Shader(const std::string& vertexShaderSrc, const std::string& fragmentShaderSrc) : m_RendererID(0)
+Shader::Shader(std::string& vertexShaderSrc, std::string& fragmentShaderSrc) : m_RendererID(0)
 {
+	std::string vertexCode;
+	std::string fragmentCode;
+	std::ifstream vertexShaderFile;
+	std::ifstream fragmentShaderFile;
 
+	vertexShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	fragmentShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	try 
+	{
+		// open files
+		vertexShaderFile.open(vertexShaderSrc);
+		fragmentShaderFile.open(fragmentShaderSrc);
+		std::stringstream vShaderStream, fShaderStream;
+		// read file's buffer contents into streams
+		vShaderStream << vertexShaderFile.rdbuf();
+		fShaderStream << fragmentShaderFile.rdbuf();
+		// close file handlers
+		vertexShaderFile.close();
+		fragmentShaderFile.close();
+		// convert stream into string
+		vertexCode = vShaderStream.str();
+		fragmentCode = fShaderStream.str();
+	}
+	catch (std::ifstream::failure e)
+	{
+		std::cout << "SHADER: FILE_NOT_SUCCESFULLY_READ" << std::endl;
+	}
+
+	vertexShaderSrc = vertexCode; 
+	fragmentShaderSrc = fragmentCode;
 	// Create an empty vertex shader handle
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 

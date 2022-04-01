@@ -17,8 +17,8 @@ private:
 	void ApplyGravity(const std::shared_ptr<GameObject>& gameObject);
 	void UpdateActiveObjects();
 	void CollisionBroadSearch();
-	void CollisionResponse(const std::shared_ptr<GameObject>& gameObject_A, const std::shared_ptr<GameObject>& gameObject_B);
-	void AddImpulse(const std::shared_ptr<GameObject>& gameObject, glm::vec3 direction, float force);
+	void CollisionResolution(const std::shared_ptr<GameObject>& gameObject_A, const std::shared_ptr<GameObject>& gameObject_B);
+	void AddImpulse(const std::shared_ptr<GameObject>& gameObject, const glm::vec3& direction, float force);
 	std::vector<std::shared_ptr<GameObject>> SortByMinX( std::vector<std::shared_ptr<GameObject>>& list);
 
 private:

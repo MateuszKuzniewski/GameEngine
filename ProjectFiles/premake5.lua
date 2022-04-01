@@ -19,7 +19,7 @@ project "OpenGL_Premake"
 	includedirs { "Dependencies/GLFW/include", "Dependencies/GLEW/include/", "Dependencies/GLM"}
 	libdirs { "Dependencies/GLFW/lib-vc2019", "Dependencies/GLEW/lib/Release/x64" }
 	
-	files { "files/**.h", "files/**.cpp" }
+	files { "files/**.h", "files/**.cpp"}
 	
 
 	links { "glfw3", "glew32s", "opengl32" }

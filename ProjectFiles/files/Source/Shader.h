@@ -6,7 +6,7 @@ class Shader
 {
 public:
 
-	Shader(const std::string& vertexShaderSrc, const std::string& fragmentShaderSrc);
+	Shader(std::string& vertexShaderSrc, std::string& fragmentShaderSrc);
 	~Shader();
 
 	void Bind() const;
