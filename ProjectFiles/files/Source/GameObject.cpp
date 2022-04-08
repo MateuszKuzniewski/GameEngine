@@ -1,13 +1,25 @@
 #include "GameObject.h"
 #include <GLFW/glfw3.h>
+#include <gtc/type_ptr.hpp>
 #include <iostream>
 
-GameObject::GameObject(const std::string& path, const std::string& name) : m_Transform(glm::mat4(1.0f))
+GameObject::GameObject(rp3d::PhysicsWorld* world)
 {
-    m_Name = name;
+    m_Orientation = rp3d::Quaternion::identity();
+    m_Transform = rp3d::Transform(m_Position, m_Orientation);
+    m_RigidBody = world->createRigidBody(m_Transform);
+    m_RigidBody->enableGravity(false);
+    m_RigidBody->setType(rp3d::BodyType::STATIC);
+}
+
+GameObject::GameObject(const std::string& path, const std::string& name, rp3d::PhysicsWorld* world)
+{
+    Properties.name = name;
     m_ModelMesh = std::make_unique<ModelMesh>(path);
-    GenerateBuffers(m_ModelMesh->GetVertices(), m_ModelMesh->GetIndecies());
-    UpdateTransform();
+    GenerateBuffers(m_ModelMesh->GetVertices(), m_ModelMesh->GetIndices());
+    m_Orientation = rp3d::Quaternion::identity();
+    m_Transform = rp3d::Transform(m_Position, m_Orientation);
+    m_RigidBody = world->createRigidBody(m_Transform);
 }
 
 GameObject::~GameObject()
@@ -17,10 +29,6 @@ GameObject::~GameObject()
     m_VertexArray->Unbind();
 }
 
-void GameObject::SetName(const std::string& name)
-{
-    m_Name = name;
-}
 
 void GameObject::GenerateBuffers(const std::vector<float>& vertices, const std::vector<uint32_t>& indices)
 {
@@ -47,22 +55,43 @@ void GameObject::GenerateBuffers(const std::vector<float>& vertices, const std::
      m_VertexArray->AddIndexBuffer(m_IndexBuffer);
 }
 
-void GameObject::UpdateTransform()
+void GameObject::UpdateTransform(rp3d::RigidBody* body)
 {
-    m_Transform = glm::translate(glm::mat4(1.0f), Transform.position);
 }
 
 void GameObject::GenerateQuad()
 {
     m_ModelMesh = std::make_unique<ModelMesh>();
     m_ModelMesh->GenerateQuadData();
-    GenerateBuffers(m_ModelMesh->GetVertices(), m_ModelMesh->GetIndecies());
+    GenerateBuffers(m_ModelMesh->GetVertices(), m_ModelMesh->GetIndices());
 
 }
 
-void GameObject::Update()
+void GameObject::SetPosition(const rp3d::Vector3& position)
 {
-    UpdateTransform();
+    rp3d::Transform transform(position, m_RigidBody->getTransform().getOrientation());
+    m_RigidBody->setTransform(transform);
+}
+
+void GameObject::SetRotation(const rp3d::Vector3& rotation)
+{
+    rp3d::Quaternion newRot = rp3d::Quaternion::fromEulerAngles(rotation);
+    rp3d::Transform transform(m_RigidBody->getTransform().getPosition(), newRot);
+    m_RigidBody->setTransform(transform);
+}
+
+void GameObject::AddSphereShape(rp3d::SphereShape* shape)
+{
+    m_Collider = m_RigidBody->addCollider(shape, m_Transform);
+    rp3d::Material& material = m_Collider->getMaterial();
+    material.setBounciness(0.9f);
+    m_Collider->setMaterial(material);
+}
+
+void GameObject::AddBoxShape(rp3d::BoxShape* shape)
+{
+    m_Collider = m_RigidBody->addCollider(shape, m_Transform);
+
 }
 
 std::shared_ptr<IndexBuffer> GameObject::GetIndexBuffer() const
@@ -75,11 +104,16 @@ std::shared_ptr<VertexArray> GameObject::GetVertexArray() const
     return m_VertexArray;
 }
 
-glm::mat4 GameObject::GetTransform() const
+glm::mat4 GameObject::GetOpenGLTransform() const
 {
-    return m_Transform;
+    rp3d::Transform pos = m_RigidBody->getTransform();
+    float mat[16];
+    glm::mat4 matrix;
+    pos.getOpenGLMatrix(mat);
+    memcpy(glm::value_ptr(matrix), mat, sizeof(mat));
+   
+    return matrix;
 }
-
 
 float GameObject::GetWidth() const
 {
@@ -99,22 +133,17 @@ float GameObject::GetDepth() const
     return depth;
 }
 
-std::string GameObject::GetName() const
-{
-    return m_Name;
-}
-
 glm::vec2 GameObject::GetWidthPoints() const
 {
-    return glm::vec2(m_ModelMesh->GetLowestVert().x + Transform.position.x, m_ModelMesh->GetHighestVert().x + Transform.position.x);
+    return glm::vec2(m_ModelMesh->GetLowestVert().x + m_RigidBody->getTransform().getPosition().x, m_ModelMesh->GetHighestVert().x + m_RigidBody->getTransform().getPosition().x);
 }
 
 glm::vec2 GameObject::GetHeightPoints() const
 {
-    return glm::vec2(m_ModelMesh->GetLowestVert().y + Transform.position.y, m_ModelMesh->GetHighestVert().y + Transform.position.y);
+    return glm::vec2(m_ModelMesh->GetLowestVert().y + m_RigidBody->getTransform().getPosition().y, m_ModelMesh->GetHighestVert().y + m_RigidBody->getTransform().getPosition().y);
 }
 
 glm::vec2 GameObject::GetDepthPoints() const
 {
-    return glm::vec2(m_ModelMesh->GetLowestVert().z + Transform.position.z, m_ModelMesh->GetHighestVert().z + Transform.position.z);
+    return glm::vec2(m_ModelMesh->GetLowestVert().z + m_RigidBody->getTransform().getPosition().z, m_ModelMesh->GetHighestVert().z + m_RigidBody->getTransform().getPosition().z);
 }

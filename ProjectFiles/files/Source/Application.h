@@ -4,6 +4,7 @@
 #include "Window.h"
 #include "Texture.h"
 #include "PhysicsWorld.h"
+#include <reactphysics3d/reactphysics3d.h>
 
 class Application
 {
@@ -20,11 +21,11 @@ private:
 	std::shared_ptr<Shader> m_Shader;
 	std::unique_ptr<Texture> m_Texture;
 	std::shared_ptr<GameObject> m_MonkeyHead;
-	std::shared_ptr<GameObject> m_MonkeyHead2;
 	std::shared_ptr<GameObject> m_Ground;
-	std::shared_ptr<GameObject> m_Ground2;
 	std::unique_ptr<Renderer> m_Renderer;
-	std::unique_ptr<PhysicsWorld> m_PhysicsWorld;
+	reactphysics3d::PhysicsCommon m_PhysicsCommon;
+	reactphysics3d::PhysicsWorld::WorldSettings m_WorldSettings;
+	reactphysics3d::PhysicsWorld* m_PhysicsWorld;
 	std::string WorkingDir;
 
 };

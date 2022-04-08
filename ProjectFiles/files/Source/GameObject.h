@@ -3,6 +3,7 @@
 #include <glm.hpp>
 #include <memory>
 #include <gtc/quaternion.hpp>
+#include <reactphysics3d/reactphysics3d.h>
 
 #include "IndexBuffer.h"
 #include "BufferLayout.h"
@@ -10,54 +11,48 @@
 #include "VertexArray.h"
 #include "ModelMesh.h"
 #include "Time.h"
+#include "Component.h"
 
 struct Properties
 {
-	bool Gravity = true;
-	bool Collisions = true;
+	std::string name = "GameObject";
+	bool gravity = true;
+	bool collisions = true;
 	bool hasCollided = false;
-};
-
-struct Transform
-{
-	glm::vec3 position = { 0.0f, 0.0f, 0.0f };
-	glm::vec3 direction = { 0.0f, 0.0f, 0.0f };
-	
 };
 
 class GameObject
 {
 public:
-
 	GameObject() = default;
-	GameObject(const std::string& path, const std::string& name);
+	GameObject(rp3d::PhysicsWorld* world);
+	GameObject(const std::string& path, const std::string& name, rp3d::PhysicsWorld* world);
 	~GameObject();
 
-	void SetName(const std::string& name);
 	void GenerateQuad();
-	void Update();
-
+	void SetPosition(const rp3d::Vector3& position);
+	void SetRotation(const rp3d::Vector3& rotation);
+	void AddSphereShape(rp3d::SphereShape* shape);
+	void AddBoxShape(rp3d::BoxShape* shape);
 	float GetWidth() const;
 	float GetHeight() const;
 	float GetDepth() const;
-	std::string GetName() const;
 
-	glm::mat4 GetTransform() const;
+	glm::mat4 GetOpenGLTransform() const;
 	glm::vec2 GetWidthPoints() const;
 	glm::vec2 GetHeightPoints() const;
 	glm::vec2 GetDepthPoints() const;
 
 	std::shared_ptr<IndexBuffer> GetIndexBuffer() const;
 	std::shared_ptr<VertexArray> GetVertexArray() const;
+	
+	// Public Handles
 	Properties Properties;
-	Transform Transform;
-
 
 private:
 
 	void GenerateBuffers(const std::vector<float>& vertices, const std::vector<uint32_t>& indices);
-	void UpdateTransform();
-
+	void UpdateTransform(rp3d::RigidBody* body);
 
 private:
 
@@ -66,8 +61,10 @@ private:
 	std::shared_ptr<VertexArray> m_VertexArray;
 	std::unique_ptr<ModelMesh> m_ModelMesh;
 
-	glm::mat4 m_Transform = glm::mat4(1.0f);
-	std::string m_Name = "GameObject";
-
+	rp3d::Quaternion m_Orientation;
+	rp3d::Transform m_Transform;
+	rp3d::Vector3 m_Position;
+	rp3d::RigidBody* m_RigidBody;
+	rp3d::Collider* m_Collider;
 };
 

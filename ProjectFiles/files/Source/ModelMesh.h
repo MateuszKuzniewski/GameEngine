@@ -17,7 +17,7 @@ public:
 	~ModelMesh();
 
 
-	std::vector<uint32_t> GetIndecies();
+	std::vector<uint32_t> GetIndices();
 	std::vector<float> GetVertices();
 	glm::vec3 GetHighestVert() const;
 	glm::vec3 GetLowestVert() const;

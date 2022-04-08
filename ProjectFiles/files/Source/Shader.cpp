@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <reactphysics3d/reactphysics3d.h>
 
 Shader::Shader(std::string& vertexShaderSrc, std::string& fragmentShaderSrc) : m_RendererID(0)
 {
@@ -35,14 +36,12 @@ Shader::Shader(std::string& vertexShaderSrc, std::string& fragmentShaderSrc) : m
 		std::cout << "SHADER: FILE_NOT_SUCCESFULLY_READ" << std::endl;
 	}
 
-	vertexShaderSrc = vertexCode; 
-	fragmentShaderSrc = fragmentCode;
 	// Create an empty vertex shader handle
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
 	// Send the vertex shader source code to GL
 	// Note that std::string's .c_str is NULL character terminated.
-	const GLchar* source = (const GLchar*)vertexShaderSrc.c_str();
+	const GLchar* source = (const GLchar*)vertexCode.c_str();
 	glShaderSource(vertexShader, 1, &source, 0);
 
 	// Compile the vertex shader
@@ -75,7 +74,7 @@ Shader::Shader(std::string& vertexShaderSrc, std::string& fragmentShaderSrc) : m
 
 	// Send the fragment shader source code to GL
 	// Note that std::string's .c_str is NULL character terminated.
-	source = (const GLchar*)fragmentShaderSrc.c_str();
+	source = (const GLchar*)fragmentCode.c_str();
 	glShaderSource(fragmentShader, 1, &source, 0);
 
 	// Compile the fragment shader

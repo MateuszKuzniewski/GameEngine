@@ -23,7 +23,7 @@ void Renderer::Submit(std::shared_ptr<GameObject> gameObject, std::shared_ptr<Sh
     shader->UploadUniformMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
     shader->UploadUniformMat4("u_ViewMatrix", camera.GetViewMatrix());
     shader->UploadUniformVec3("u_ViewPos", camera.GetPosition());
-    shader->UploadUniformMat4("u_Transform", gameObject->GetTransform());
+    shader->UploadUniformMat4("u_Transform", gameObject->GetOpenGLTransform());
 
     gameObject->GetVertexArray()->Bind();
     glDrawElements(GL_TRIANGLES, gameObject->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);

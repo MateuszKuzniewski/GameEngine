@@ -54,20 +54,20 @@ void PhysicsWorld::ApplyGravity(const std::shared_ptr<GameObject>& gameObject)
 
 	const float deltaSpeed = m_Gravity;
 	dir += deltaSpeed * glm::vec3(0.0f, -1.0f, 0.0f);
-	gameObject->Transform.position += dir;
+	
 
 }
 
 void PhysicsWorld::UpdateActiveObjects()
 {
-	for (auto gameObject : m_ActiveObjectsList)
-	{
-		// Updates Transform
-		gameObject->Update();
+	//for (auto gameObject : m_ActiveObjectsList)
+	//{
+	//	// Updates Transform
+	//	gameObject->Update();
 
-		if (gameObject->Properties.Gravity)
-			ApplyGravity(gameObject);
-	}
+	//	if (gameObject->Properties.gravity)
+	//		ApplyGravity(gameObject);
+	//}
 }
 
 std::vector<std::shared_ptr<GameObject>> PhysicsWorld::SortByMinX(std::vector<std::shared_ptr<GameObject>>& list)
@@ -115,14 +115,13 @@ void PhysicsWorld::CollisionResolution(const std::shared_ptr<GameObject>& gameOb
 {
 	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 	float force = 2.0f;
-	if (gameObject_A->Properties.hasCollided)
-	{
-		AddImpulse(gameObject_A, up, force);
-	}
+
+    m_Gravity *= -1;
+	
 }
 
 void PhysicsWorld::AddImpulse(const std::shared_ptr<GameObject>& gameObject, const glm::vec3& direction, float force)
 {
-	gameObject->Transform.direction += direction * force * Time::GetDeltaTime();
+	
 }
 

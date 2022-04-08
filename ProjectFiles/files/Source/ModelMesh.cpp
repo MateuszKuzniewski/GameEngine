@@ -199,7 +199,7 @@ void ModelMesh::GenerateQuadData()
 
 }
 
-std::vector<uint32_t> ModelMesh::GetIndecies()
+std::vector<uint32_t> ModelMesh::GetIndices()
 {
 	return m_IndicesData;
 }

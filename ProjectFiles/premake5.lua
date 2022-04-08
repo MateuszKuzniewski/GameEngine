@@ -16,13 +16,13 @@ project "OpenGL_Premake"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 	
-	includedirs { "Dependencies/GLFW/include", "Dependencies/GLEW/include/", "Dependencies/GLM"}
-	libdirs { "Dependencies/GLFW/lib-vc2019", "Dependencies/GLEW/lib/Release/x64" }
+	includedirs { "Dependencies/GLFW/include", "Dependencies/GLEW/include/", "Dependencies/GLM", "Dependencies/ReactPhysics3D/include"}
+	libdirs { "Dependencies/GLFW/lib-vc2019", "Dependencies/GLEW/lib/Release/x64", "Dependencies/ReactPhysics3D/lib"}
 	
 	files { "files/**.h", "files/**.cpp"}
 	
 
-	links { "glfw3", "glew32s", "opengl32" }
+	links { "glfw3", "glew32s", "opengl32", "reactphysics3d" }
 	
 	filter "system:windows"
 		systemversion "latest"
