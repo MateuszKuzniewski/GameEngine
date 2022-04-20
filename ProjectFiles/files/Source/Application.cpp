@@ -31,27 +31,20 @@ void Application::Run()
     std::string vertexShaderSrc = shaderPath + "default.vert";
     std::string fragmentShaderSrc = shaderPath + "default.frag";
 
-
     m_Renderer = std::make_unique<Renderer>();
     m_Texture = std::make_unique<Texture>(assetPath + "container.jpg");
     m_Shader = std::make_shared<Shader>(vertexShaderSrc, fragmentShaderSrc);
+    Component componentBase(m_PhysicsWorld, &m_PhysicsCommon);
 
-    m_MonkeyHead = std::make_shared<GameObject>(assetPath + "monkey.obj", "MonkeyHead_1", m_PhysicsWorld);
-    m_Ground = std::make_shared<GameObject>(m_PhysicsWorld);
-
-    rp3d::SphereShape* sphere = m_PhysicsCommon.createSphereShape(1.0f);
-    rp3d::BoxShape* box = m_PhysicsCommon.createBoxShape(rp3d::Vector3(5.0f, 0.1f, 5.0f));
+    m_MonkeyHead = std::make_shared<GameObject>(assetPath + "monkey.obj");
+    m_MonkeyHead->AddComponent<Rigidbody>(componentBase);
 
 
-    m_MonkeyHead->SetPosition(rp3d::Vector3(0.0f, 5.0f, 0.0f));
-    m_MonkeyHead->AddSphereShape(sphere);
+ //   auto& x = m_MonkeyHead->GetComponent<Rigidbody>();
 
+   // m_Ground = std::make_shared<GameObject>();
+   // m_Ground->GenerateQuad();
 
-    m_Ground->GenerateQuad();
-    m_Ground->SetRotation(rp3d::Vector3(0.0f, 0.0f, 45.0f));
-    m_Ground->SetPosition(rp3d::Vector3(0.0f, -5.0f, -5.0f));
-    m_Ground->Properties.name = "Ground";
-    m_Ground->AddBoxShape(box);
 
 
     while (!glfwWindowShouldClose(m_AppWindow->GetWindow()))
@@ -73,7 +66,7 @@ void Application::Run()
 
         m_Renderer->Setup();
         m_Renderer->Submit(m_MonkeyHead, m_Shader, m_CameraInstance);
-        m_Renderer->Submit(m_Ground, m_Shader, m_CameraInstance);
+      // m_Renderer->Submit(m_Ground, m_Shader, m_CameraInstance);
 
 
         /* Swap front and back buffers */

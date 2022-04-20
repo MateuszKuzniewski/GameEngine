@@ -2,24 +2,17 @@
 #include <GLFW/glfw3.h>
 #include <gtc/type_ptr.hpp>
 #include <iostream>
+#include "Rigidbody.h"
 
-GameObject::GameObject(rp3d::PhysicsWorld* world)
+
+GameObject::GameObject()
 {
-    m_Orientation = rp3d::Quaternion::identity();
-    m_Transform = rp3d::Transform(m_Position, m_Orientation);
-    m_RigidBody = world->createRigidBody(m_Transform);
-    m_RigidBody->enableGravity(false);
-    m_RigidBody->setType(rp3d::BodyType::STATIC);
 }
 
-GameObject::GameObject(const std::string& path, const std::string& name, rp3d::PhysicsWorld* world)
+GameObject::GameObject(const std::string& path)
 {
-    Properties.name = name;
     m_ModelMesh = std::make_unique<ModelMesh>(path);
     GenerateBuffers(m_ModelMesh->GetVertices(), m_ModelMesh->GetIndices());
-    m_Orientation = rp3d::Quaternion::identity();
-    m_Transform = rp3d::Transform(m_Position, m_Orientation);
-    m_RigidBody = world->createRigidBody(m_Transform);
 }
 
 GameObject::~GameObject()
@@ -55,42 +48,12 @@ void GameObject::GenerateBuffers(const std::vector<float>& vertices, const std::
      m_VertexArray->AddIndexBuffer(m_IndexBuffer);
 }
 
-void GameObject::UpdateTransform(rp3d::RigidBody* body)
-{
-}
 
 void GameObject::GenerateQuad()
 {
     m_ModelMesh = std::make_unique<ModelMesh>();
     m_ModelMesh->GenerateQuadData();
     GenerateBuffers(m_ModelMesh->GetVertices(), m_ModelMesh->GetIndices());
-
-}
-
-void GameObject::SetPosition(const rp3d::Vector3& position)
-{
-    rp3d::Transform transform(position, m_RigidBody->getTransform().getOrientation());
-    m_RigidBody->setTransform(transform);
-}
-
-void GameObject::SetRotation(const rp3d::Vector3& rotation)
-{
-    rp3d::Quaternion newRot = rp3d::Quaternion::fromEulerAngles(rotation);
-    rp3d::Transform transform(m_RigidBody->getTransform().getPosition(), newRot);
-    m_RigidBody->setTransform(transform);
-}
-
-void GameObject::AddSphereShape(rp3d::SphereShape* shape)
-{
-    m_Collider = m_RigidBody->addCollider(shape, m_Transform);
-    rp3d::Material& material = m_Collider->getMaterial();
-    material.setBounciness(0.9f);
-    m_Collider->setMaterial(material);
-}
-
-void GameObject::AddBoxShape(rp3d::BoxShape* shape)
-{
-    m_Collider = m_RigidBody->addCollider(shape, m_Transform);
 
 }
 
@@ -104,16 +67,7 @@ std::shared_ptr<VertexArray> GameObject::GetVertexArray() const
     return m_VertexArray;
 }
 
-glm::mat4 GameObject::GetOpenGLTransform() const
-{
-    rp3d::Transform pos = m_RigidBody->getTransform();
-    float mat[16];
-    glm::mat4 matrix;
-    pos.getOpenGLMatrix(mat);
-    memcpy(glm::value_ptr(matrix), mat, sizeof(mat));
-   
-    return matrix;
-}
+
 
 float GameObject::GetWidth() const
 {
@@ -133,17 +87,20 @@ float GameObject::GetDepth() const
     return depth;
 }
 
-glm::vec2 GameObject::GetWidthPoints() const
+glm::vec2 GameObject::GetWidthPoints()
 {
-    return glm::vec2(m_ModelMesh->GetLowestVert().x + m_RigidBody->getTransform().getPosition().x, m_ModelMesh->GetHighestVert().x + m_RigidBody->getTransform().getPosition().x);
+    auto& transform = GetComponent<Rigidbody>().GetPosition();
+    return glm::vec2(m_ModelMesh->GetLowestVert().x + transform.x, m_ModelMesh->GetHighestVert().x + transform.x);
 }
 
-glm::vec2 GameObject::GetHeightPoints() const
+glm::vec2 GameObject::GetHeightPoints()
 {
-    return glm::vec2(m_ModelMesh->GetLowestVert().y + m_RigidBody->getTransform().getPosition().y, m_ModelMesh->GetHighestVert().y + m_RigidBody->getTransform().getPosition().y);
+    auto& transform = GetComponent<Rigidbody>().GetPosition();
+    return glm::vec2(m_ModelMesh->GetLowestVert().y + transform.y, m_ModelMesh->GetHighestVert().y + transform.y);
 }
 
-glm::vec2 GameObject::GetDepthPoints() const
+glm::vec2 GameObject::GetDepthPoints()
 {
-    return glm::vec2(m_ModelMesh->GetLowestVert().z + m_RigidBody->getTransform().getPosition().z, m_ModelMesh->GetHighestVert().z + m_RigidBody->getTransform().getPosition().z);
+    auto& transform = GetComponent<Rigidbody>().GetPosition();
+    return glm::vec2(m_ModelMesh->GetLowestVert().z + transform.z, m_ModelMesh->GetHighestVert().z + transform.z);
 }

@@ -35,15 +35,12 @@ void PhysicsWorld::CheckCollision(const std::shared_ptr<GameObject>& gameObject_
 		(gameObject_A->GetHeightPoints().x <= gameObject_B->GetHeightPoints().y && gameObject_A->GetHeightPoints().y >= gameObject_B->GetHeightPoints().x) &&
 		(gameObject_A->GetDepthPoints().x  <= gameObject_B->GetDepthPoints().y  && gameObject_A->GetDepthPoints().y  >= gameObject_B->GetDepthPoints().x))
 	{
-		gameObject_A->Properties.hasCollided = true;
-		gameObject_B->Properties.hasCollided = true;
+
 		//std::cout << "Collision: " << gameObject_A->GetName() << " + " << gameObject_B->GetName() << std::endl;
 		CollisionResolution(gameObject_A, gameObject_B);
 	}
 	else
 	{
-		gameObject_A->Properties.hasCollided = false;
-		gameObject_B->Properties.hasCollided = false;
 	}
 }
 
