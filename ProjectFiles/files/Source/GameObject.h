@@ -13,7 +13,7 @@
 class GameObject
 {
 public:
-	GameObject();
+	GameObject() = default;
 	GameObject(const std::string& path);
 	~GameObject();
 
