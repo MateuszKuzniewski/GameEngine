@@ -17,7 +17,6 @@ GameObject::~GameObject()
     m_VertexArray->Unbind();
 }
 
-
 void GameObject::GenerateBuffers(const std::vector<float>& vertices, const std::vector<uint32_t>& indices)
 {
     if (vertices.size() <= 0 || indices.size() <= 0)
@@ -43,7 +42,6 @@ void GameObject::GenerateBuffers(const std::vector<float>& vertices, const std::
      m_VertexArray->AddIndexBuffer(m_IndexBuffer);
 }
 
-
 void GameObject::GenerateQuad()
 {
     m_ModelMesh = std::make_unique<ModelMesh>();
@@ -61,8 +59,6 @@ std::shared_ptr<VertexArray> GameObject::GetVertexArray() const
 {
     return m_VertexArray;
 }
-
-
 
 float GameObject::GetWidth() const
 {
