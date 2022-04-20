@@ -4,11 +4,6 @@
 #include <iostream>
 #include "Rigidbody.h"
 
-
-GameObject::GameObject()
-{
-}
-
 GameObject::GameObject(const std::string& path)
 {
     m_ModelMesh = std::make_unique<ModelMesh>(path);
