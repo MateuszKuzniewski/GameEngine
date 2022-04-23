@@ -1,17 +1,17 @@
 #include "Rigidbody.h"
 #include <gtc/type_ptr.hpp>
 
-Rigidbody::Rigidbody() : m_Rigidbody(NULL)
+Rigidbody::Rigidbody() : m_Rigidbody(NULL), m_Collider(NULL)
 {
 
 }
 
-Rigidbody::Rigidbody(const Component& componentData) : Component(componentData), m_Position(rp3d::Vector3(0.0f, 0.0f, 0.0f))
+Rigidbody::Rigidbody(const Component& componentData) : Component(componentData), m_Position(rp3d::Vector3(0.0f, 0.0f, 0.0f)), m_Collider(NULL)
 {
     m_Orientation = rp3d::Quaternion::identity();
     rp3d::Transform transform(m_Position, m_Orientation);
     m_Transform = transform;
-   
+
     m_Rigidbody = m_PhysicsWorld->createRigidBody(m_Transform);
 	m_ComponentID = 1;
 }

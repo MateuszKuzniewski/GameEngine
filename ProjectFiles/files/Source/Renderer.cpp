@@ -16,16 +16,16 @@ void Renderer::Setup()
 	glClearColor(0.1f, 0.1, 0.1f, 0.1f);
 }
 
-void Renderer::Submit(std::shared_ptr<GameObject> gameObject, std::shared_ptr<Shader> shader, Camera& camera)
+void Renderer::Submit(glm::mat4 transform, std::shared_ptr<VertexArray> vertexArray, std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<Shader> shader, Camera& camera)
 {
 
     shader->Bind();
     shader->UploadUniformMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
     shader->UploadUniformMat4("u_ViewMatrix", camera.GetViewMatrix());
     shader->UploadUniformVec3("u_ViewPos", camera.GetPosition());
-    shader->UploadUniformMat4("u_Transform", gameObject->GetComponent<Rigidbody>().GetOpenGLTransform());
+    shader->UploadUniformMat4("u_Transform", transform);
 
-    gameObject->GetVertexArray()->Bind();
-    glDrawElements(GL_TRIANGLES, gameObject->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+    vertexArray->Bind();
+    glDrawElements(GL_TRIANGLES, indexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
 
 }

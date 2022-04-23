@@ -12,7 +12,7 @@ public:
 	~Renderer();
 
 	void Setup();
-	void Submit(std::shared_ptr<GameObject> gameObject, std::shared_ptr<Shader> shader, Camera& camera);
+	void Submit(glm::mat4 transform, std::shared_ptr<VertexArray> vertexArray, std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<Shader> shader, Camera& camera);
 
 private:
 

@@ -38,9 +38,9 @@ void Application::Run()
 
     m_MonkeyHead = std::make_shared<GameObject>(assetPath + "monkey.obj");
     m_MonkeyHead->AddComponent<Rigidbody>(componentData);
-    auto& m_MonkeyHeadRB = m_MonkeyHead->GetComponent<Rigidbody>();
-    m_MonkeyHeadRB.AddSphereCollider(1.0f);
-    m_MonkeyHeadRB.SetPhysicalMaterialProperties(1.0f, 1.0f);
+    auto& monkeyHeadRB = m_MonkeyHead->GetComponent<Rigidbody>();
+    monkeyHeadRB.AddSphereCollider(1.0f);
+    monkeyHeadRB.SetPhysicalMaterialProperties(0.5f, 0.5f);
 
 
     m_Ground = std::make_shared<GameObject>();
@@ -72,8 +72,8 @@ void Application::Run()
         }
 
         m_Renderer->Setup();
-        m_Renderer->Submit(m_MonkeyHead, m_Shader, m_CameraInstance);
-        m_Renderer->Submit(m_Ground, m_Shader, m_CameraInstance);
+        m_Renderer->Submit(monkeyHeadRB.GetOpenGLTransform(), m_MonkeyHead->GetVertexArray(), m_MonkeyHead->GetIndexBuffer(), m_Shader, m_CameraInstance);
+        m_Renderer->Submit(groundRB.GetOpenGLTransform(), m_Ground->GetVertexArray(), m_Ground->GetIndexBuffer(), m_Shader, m_CameraInstance);
 
 
         /* Swap front and back buffers */
