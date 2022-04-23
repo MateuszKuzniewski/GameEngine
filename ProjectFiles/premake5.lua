@@ -17,7 +17,7 @@ project "OpenGL_Premake"
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 	
 	includedirs { "Dependencies/GLFW/include", "Dependencies/GLEW/include/", "Dependencies/GLM", "Dependencies/ReactPhysics3D/include"}
-	libdirs { "Dependencies/GLFW/lib-vc2019", "Dependencies/GLEW/lib/Release/x64", "Dependencies/ReactPhysics3D/lib"}
+	libdirs { "Dependencies/GLFW/lib-vc2022", "Dependencies/GLEW/lib/Release/x64", "Dependencies/ReactPhysics3D/lib"}
 	
 	files { "files/**.h", "files/**.cpp"}
 	

@@ -13,9 +13,9 @@ public:
 protected:
 
     uint32_t m_ComponentID;
-	rp3d::PhysicsWorld* m_PhysicsWorld;
+	
 	rp3d::PhysicsCommon* m_PhysicsCommon;
-
+	rp3d::PhysicsWorld* m_PhysicsWorld;
 
 };
 

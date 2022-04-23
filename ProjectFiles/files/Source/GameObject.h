@@ -74,6 +74,8 @@ inline ComponentType& GameObject::GetComponent()
 	return *std::unique_ptr<ComponentType>(nullptr);
 }
 
+
+
 template<typename ComponentType>
 inline bool GameObject::HasComponent()
 {

@@ -34,18 +34,25 @@ void Application::Run()
     m_Renderer = std::make_unique<Renderer>();
     m_Texture = std::make_unique<Texture>(assetPath + "container.jpg");
     m_Shader = std::make_shared<Shader>(vertexShaderSrc, fragmentShaderSrc);
-    Component componentBase(m_PhysicsWorld, &m_PhysicsCommon);
+    Component componentData(m_PhysicsWorld, &m_PhysicsCommon);
 
     m_MonkeyHead = std::make_shared<GameObject>(assetPath + "monkey.obj");
-    m_MonkeyHead->AddComponent<Rigidbody>(componentBase);
+    m_MonkeyHead->AddComponent<Rigidbody>(componentData);
+    auto& m_MonkeyHeadRB = m_MonkeyHead->GetComponent<Rigidbody>();
+    m_MonkeyHeadRB.AddSphereCollider(1.0f);
+    m_MonkeyHeadRB.SetPhysicalMaterialProperties(1.0f, 1.0f);
 
 
- //   auto& x = m_MonkeyHead->GetComponent<Rigidbody>();
-
-   // m_Ground = std::make_shared<GameObject>();
-   // m_Ground->GenerateQuad();
-
-
+    m_Ground = std::make_shared<GameObject>();
+    m_Ground->GenerateQuad();
+    m_Ground->AddComponent<Rigidbody>(componentData);
+    rp3d::Vector3 colldierSize(5.0f, 0.2f, 5.0f);
+    auto& groundRB = m_Ground->GetComponent<Rigidbody>();
+    groundRB.SetRigidbodyType(rp3d::BodyType::STATIC);
+    groundRB.SetPositon(rp3d::Vector3(0.0f, -10.0f, -5.0f));
+    groundRB.SetRotation(rp3d::Vector3(0.0f, 0.0f, 45.0f));
+    groundRB.AddBoxCollider(colldierSize);
+    groundRB.SetPhysicalMaterialProperties(0.0f, 0.0f);
 
     while (!glfwWindowShouldClose(m_AppWindow->GetWindow()))
     {
@@ -58,15 +65,15 @@ void Application::Run()
         currentTime = newTime;
         accumulator += frameTime;
 
-        while (accumulator >= dt) {
+        while (accumulator >= dt) 
+        {
             m_PhysicsWorld->update(dt);
             accumulator -= dt;
-
         }
 
         m_Renderer->Setup();
         m_Renderer->Submit(m_MonkeyHead, m_Shader, m_CameraInstance);
-      // m_Renderer->Submit(m_Ground, m_Shader, m_CameraInstance);
+        m_Renderer->Submit(m_Ground, m_Shader, m_CameraInstance);
 
 
         /* Swap front and back buffers */

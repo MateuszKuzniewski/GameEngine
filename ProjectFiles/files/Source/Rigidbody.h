@@ -6,7 +6,7 @@ class Rigidbody : public Component
 {
 public:
 	Rigidbody();
-	Rigidbody(const Component& component);
+	Rigidbody(const Component& componentData);
 	~Rigidbody();
 
 	void SetRigidbodyType(rp3d::BodyType type);
@@ -17,10 +17,15 @@ public:
 	void ApplyForce(const rp3d::Vector3& force);
 	void ApplyForceAtLocalPosition(const rp3d::Vector3& force, const rp3d::Vector3& point);
 	void ApplyTorque(const rp3d::Vector3& torque);
-
+	rp3d::RigidBody* GetRP3DRigidbody();
 	rp3d::Vector3 GetPosition();
 	rp3d::Transform GetTransform();
 	glm::mat4 GetOpenGLTransform();
+
+	void AddBoxCollider(const rp3d::Vector3& halfPoints);
+	void AddSphereCollider(const float radius);
+	void AddCapsuleCollider(const float radius, const float height);
+	void SetPhysicalMaterialProperties(const float bounciness, const float friction);
 
 private:
 	rp3d::Quaternion CreateQuaternionFromEulerAngles(const rp3d::Vector3& angles);
@@ -28,10 +33,10 @@ private:
 
 private:
 	rp3d::Vector3 m_Position;
-	rp3d::Vector3 m_EulerAngles;
 	rp3d::Quaternion m_Orientation;
+	rp3d::Vector3 m_EulerAngles;
 	rp3d::Transform m_Transform;
 
 	rp3d::RigidBody* m_Rigidbody;
+	rp3d::Collider* m_Collider;
 };
-

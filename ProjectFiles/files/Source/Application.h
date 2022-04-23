@@ -4,8 +4,9 @@
 #include "Window.h"
 #include "Texture.h"
 #include "Component.h"
-#include "Rigidbody.h"
-#include "Collider.h"
+#include "BoxCollider.h"
+#include "CapsuleCollider.h"
+#include "SphereCollider.h"
 #include <reactphysics3d/reactphysics3d.h>
 
 class Application
@@ -27,8 +28,8 @@ private:
 	std::shared_ptr<GameObject> m_Ground;
 	std::unique_ptr<Renderer> m_Renderer;
 	rp3d::PhysicsCommon m_PhysicsCommon;
-	rp3d::PhysicsWorld::WorldSettings m_WorldSettings;
 	rp3d::PhysicsWorld* m_PhysicsWorld;
+	rp3d::PhysicsWorld::WorldSettings m_WorldSettings;
 	std::string WorkingDir;
 
 };
