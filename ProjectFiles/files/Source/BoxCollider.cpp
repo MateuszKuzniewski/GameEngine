@@ -9,7 +9,6 @@ BoxCollider::BoxCollider(const Component& componentData, Rigidbody* rigidbody, c
 	m_CollisionBody = m_PhysicsWorld->createCollisionBody(transform);
 	rp3d::BoxShape* boxShape = m_PhysicsCommon->createBoxShape(halfPoints);
 	m_Collider = m_CollisionBody->addCollider(boxShape, transform);
-	m_ComponentID = 2;
 }
 
 BoxCollider::~BoxCollider()

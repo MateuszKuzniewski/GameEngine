@@ -3,7 +3,7 @@
 
 Rigidbody::Rigidbody() : m_Rigidbody(NULL), m_Collider(NULL)
 {
-
+	
 }
 
 Rigidbody::Rigidbody(const Component& componentData) : Component(componentData), m_Position(rp3d::Vector3(0.0f, 0.0f, 0.0f)), m_Collider(NULL)
@@ -13,12 +13,12 @@ Rigidbody::Rigidbody(const Component& componentData) : Component(componentData),
     m_Transform = transform;
 
     m_Rigidbody = m_PhysicsWorld->createRigidBody(m_Transform);
-	m_ComponentID = 1;
+
 }
 
 Rigidbody::~Rigidbody()
 {
-    m_PhysicsWorld->destroyRigidBody(m_Rigidbody);
+
 }
 
 void Rigidbody::SetRigidbodyType(rp3d::BodyType type)

@@ -6,14 +6,10 @@ class Component
 public:
 	Component() = default;
 	Component(rp3d::PhysicsWorld* world, rp3d::PhysicsCommon* common);
-	~Component();
-
-	uint32_t GetComponentID() { return m_ComponentID; }
+	virtual ~Component();
 
 protected:
 
-    uint32_t m_ComponentID;
-	
 	rp3d::PhysicsCommon* m_PhysicsCommon;
 	rp3d::PhysicsWorld* m_PhysicsWorld;
 

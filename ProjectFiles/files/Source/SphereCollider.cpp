@@ -10,7 +10,7 @@ SphereCollider::SphereCollider(const Component& componentData, Rigidbody* rigidb
 	rp3d::SphereShape* sphereShape = m_PhysicsCommon->createSphereShape(radius);
 	m_Collider = m_CollisionBody->addCollider(sphereShape, transform);
 
-	m_ComponentID = 4;
+
 }
 
 SphereCollider::~SphereCollider()

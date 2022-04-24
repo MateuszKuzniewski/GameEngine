@@ -36,23 +36,27 @@ void Application::Run()
     m_Shader = std::make_shared<Shader>(vertexShaderSrc, fragmentShaderSrc);
     Component componentData(m_PhysicsWorld, &m_PhysicsCommon);
 
-    m_MonkeyHead = std::make_shared<GameObject>(assetPath + "monkey.obj");
+    m_MonkeyHead = std::make_shared<GameObject>();
+    m_MonkeyHead->AddComponent<MeshRenderer>(componentData, assetPath + "monkey.obj");
     m_MonkeyHead->AddComponent<Rigidbody>(componentData);
     auto& monkeyHeadRB = m_MonkeyHead->GetComponent<Rigidbody>();
+    auto& monkeyHeadMesh = m_MonkeyHead->GetComponent<MeshRenderer>();
     monkeyHeadRB.AddSphereCollider(1.0f);
     monkeyHeadRB.SetPhysicalMaterialProperties(0.5f, 0.5f);
 
 
-    m_Ground = std::make_shared<GameObject>();
-    m_Ground->GenerateQuad();
-    m_Ground->AddComponent<Rigidbody>(componentData);
     rp3d::Vector3 colldierSize(5.0f, 0.2f, 5.0f);
+    m_Ground = std::make_shared<GameObject>();
+    m_Ground->AddComponent<MeshRenderer>(componentData);
+    m_Ground->AddComponent<Rigidbody>(componentData);
     auto& groundRB = m_Ground->GetComponent<Rigidbody>();
+    auto& groundMesh = m_Ground->GetComponent<MeshRenderer>();
+    groundMesh.GenerateQuad();
     groundRB.SetRigidbodyType(rp3d::BodyType::STATIC);
     groundRB.SetPositon(rp3d::Vector3(0.0f, -10.0f, -5.0f));
     groundRB.SetRotation(rp3d::Vector3(0.0f, 0.0f, 45.0f));
     groundRB.AddBoxCollider(colldierSize);
-    groundRB.SetPhysicalMaterialProperties(0.0f, 0.0f);
+    groundRB.SetPhysicalMaterialProperties(0.5f, 0.5f);
 
     while (!glfwWindowShouldClose(m_AppWindow->GetWindow()))
     {
@@ -72,8 +76,8 @@ void Application::Run()
         }
 
         m_Renderer->Setup();
-        m_Renderer->Submit(monkeyHeadRB.GetOpenGLTransform(), m_MonkeyHead->GetVertexArray(), m_MonkeyHead->GetIndexBuffer(), m_Shader, m_CameraInstance);
-        m_Renderer->Submit(groundRB.GetOpenGLTransform(), m_Ground->GetVertexArray(), m_Ground->GetIndexBuffer(), m_Shader, m_CameraInstance);
+        m_Renderer->Submit(monkeyHeadRB.GetOpenGLTransform(), monkeyHeadMesh.GetVertexArray(), monkeyHeadMesh.GetIndexBuffer(), m_Shader, m_CameraInstance);
+        m_Renderer->Submit(groundRB.GetOpenGLTransform(), groundMesh.GetVertexArray(), groundMesh.GetIndexBuffer(), m_Shader, m_CameraInstance);
 
 
         /* Swap front and back buffers */

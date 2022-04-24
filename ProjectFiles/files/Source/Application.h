@@ -4,9 +4,9 @@
 #include "Window.h"
 #include "Texture.h"
 #include "Component.h"
-#include "BoxCollider.h"
-#include "CapsuleCollider.h"
-#include "SphereCollider.h"
+#include "Rigidbody.h"
+#include "MeshRenderer.h"
+#include "GameObject.h"
 #include <reactphysics3d/reactphysics3d.h>
 
 class Application

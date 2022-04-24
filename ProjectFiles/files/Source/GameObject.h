@@ -1,33 +1,14 @@
 #pragma once
 #include <string>
-#include <glm.hpp>
 #include <memory>
-
-#include "IndexBuffer.h"
-#include "BufferLayout.h"
-#include "VertexBuffer.h"
-#include "VertexArray.h"
-#include "ModelMesh.h"
+#include <typeinfo>
 #include "Component.h"
 
 class GameObject
 {
 public:
-	GameObject() = default;
-	GameObject(const std::string& path);
+	GameObject();
 	~GameObject();
-
-	void GenerateQuad();
-	float GetWidth()  const;
-	float GetHeight() const;
-	float GetDepth()  const;
-
-	glm::vec2 GetWidthPoints();
-	glm::vec2 GetHeightPoints();
-	glm::vec2 GetDepthPoints();
-
-	std::shared_ptr<IndexBuffer> GetIndexBuffer() const;
-	std::shared_ptr<VertexArray> GetVertexArray() const;
 
 	template<typename ComponentType, typename... Args>
 	void AddComponent(Args&&... params);
@@ -40,16 +21,8 @@ public:
 
 private:
 
-	void GenerateBuffers(const std::vector<float>& vertices, const std::vector<uint32_t>& indices);
-
-private:
-
-	std::shared_ptr<IndexBuffer> m_IndexBuffer;
-	std::shared_ptr<VertexBuffer> m_VertexBuffer;
-	std::shared_ptr<VertexArray> m_VertexArray;
-	std::unique_ptr<ModelMesh> m_ModelMesh;
-
 	std::vector<std::unique_ptr<Component>> m_Components;
+	//std::unordered_map <uint32_t, std::unique_ptr<Component>> m_Components;
 
 };
 
@@ -62,16 +35,19 @@ inline void GameObject::AddComponent(Args&&... params)
 template<typename ComponentType>
 inline ComponentType& GameObject::GetComponent() 
 {
-	uint32_t componentIndex = 0;
 	for (auto&& component : m_Components) 
-	{
-		componentIndex++;
-		if (component->GetComponentID() == componentIndex)
+	{	
+		// NOTE: Typeid returns human readible string in MSVC compiler, might not work on other compilers
+
+		std::string tempTypeName = typeid(ComponentType).name();
+		std::string ptrName = typeid(*component.get()).name();
+		if (ptrName == tempTypeName)
 			return *static_cast<ComponentType*>(component.get());
+			
+			
 	}
 
-
-	return *std::unique_ptr<ComponentType>(nullptr);
+	return *static_cast<ComponentType*>(nullptr);
 }
 
 

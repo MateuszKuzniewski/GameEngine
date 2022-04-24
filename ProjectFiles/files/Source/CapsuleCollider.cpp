@@ -9,7 +9,6 @@ CapsuleCollider::CapsuleCollider(const Component& componentData, float radius, f
 	m_CollisionBody = m_PhysicsWorld->createCollisionBody(transform);
 	rp3d::CapsuleShape* capsuleShape = m_PhysicsCommon->createCapsuleShape(radius, height);
 	m_Collider = m_CollisionBody->addCollider(capsuleShape, transform);
-	m_ComponentID = 3;
 }
 
 CapsuleCollider::~CapsuleCollider()
