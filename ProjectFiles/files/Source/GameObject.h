@@ -57,8 +57,14 @@ inline bool GameObject::HasComponent()
 {
 	for (auto&& component : m_Components)
 	{
-		if (component->GetComponentID() == std::make_unique<ComponentType>()->GetComponentID())
+		// NOTE: Typeid returns human readible string in MSVC compiler, might not work on other compilers
+
+		std::string tempTypeName = typeid(ComponentType).name();
+		std::string ptrName = typeid(*component.get()).name();
+		if (ptrName == tempTypeName)
 			return true;
+
+
 	}
 
 	return false;
