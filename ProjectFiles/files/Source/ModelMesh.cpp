@@ -4,15 +4,26 @@
 #include <sstream>
 #include <algorithm>
 
-ModelMesh::ModelMesh(const std::string& path)
+ModelMesh::ModelMesh() : m_HighestVerticesValue(0), m_LowestVerticesValue(0)
 {
+	
+}
+
+ModelMesh::~ModelMesh()
+{
+	
+}
+
+void ModelMesh::ParseOBJ(const std::string& path)
+{
+	Clear();
 	std::ifstream inputStream(path);
 	FILE* file = fopen(path.c_str(), "r");
 
-	if (!inputStream) 
-	{ 
-		std::cerr << "Can't load model from a file " << path << std::endl; 
-		exit(1); 
+	if (!inputStream)
+	{
+		std::cerr << "Can't load model from a file " << path << std::endl;
+		exit(1);
 	}
 
 	std::string line;
@@ -79,13 +90,28 @@ ModelMesh::ModelMesh(const std::string& path)
 	}
 
 	CombineVertData(m_Vertices, m_Normals, m_VertexIndices, m_NormalIndices);
+
 }
 
-ModelMesh::~ModelMesh()
+void ModelMesh::ParseHeightMap(const std::string& path)
 {
+	Clear();
 
+	int width, height, channels;
+	unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 }
 
+void ModelMesh::Clear()
+{
+	m_VertexIndices.clear();
+	m_TextureIndices.clear();
+	m_NormalIndices.clear();
+	m_Vertices.clear();
+	m_Normals.clear();
+	m_TextureCoordinates.clear();
+	m_VertData.clear();
+	m_IndicesData.clear();
+}
 
 void ModelMesh::CombineVertData(std::vector<glm::vec3>& vertices, std::vector<glm::vec3>& normals, std::vector<uint32_t>& vertIndices, std::vector<uint32_t>& normalIndices)
 {

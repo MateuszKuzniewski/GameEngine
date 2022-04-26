@@ -37,10 +37,12 @@ void Application::Run()
     Component componentData(m_PhysicsWorld, &m_PhysicsCommon);
 
     m_MonkeyHead = std::make_shared<GameObject>();
-    m_MonkeyHead->AddComponent<MeshRenderer>(componentData, assetPath + "monkey.obj");
+    m_MonkeyHead->AddComponent<MeshRenderer>(componentData);
     m_MonkeyHead->AddComponent<Rigidbody>(componentData);
     auto& monkeyHeadRB = m_MonkeyHead->GetComponent<Rigidbody>();
     auto& monkeyHeadMesh = m_MonkeyHead->GetComponent<MeshRenderer>();
+    monkeyHeadMesh.LoadFromOBJ(assetPath + "monkey.obj");
+    monkeyHeadMesh.LoadFromOBJ(assetPath + "monkey.obj");
     monkeyHeadRB.AddSphereCollider(1.0f);
     monkeyHeadRB.SetPhysicalMaterialProperties(0.5f, 0.5f);
 

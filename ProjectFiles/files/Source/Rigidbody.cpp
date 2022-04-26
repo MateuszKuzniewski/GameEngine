@@ -13,7 +13,6 @@ Rigidbody::Rigidbody(const Component& componentData) : Component(componentData),
     m_Transform = transform;
 
     m_Rigidbody = m_PhysicsWorld->createRigidBody(m_Transform);
-
 }
 
 Rigidbody::~Rigidbody()

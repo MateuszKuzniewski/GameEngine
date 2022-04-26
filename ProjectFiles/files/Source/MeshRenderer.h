@@ -6,14 +6,16 @@
 #include "VertexArray.h"
 #include "ModelMesh.h"
 
+
 class MeshRenderer : public Component
 {
 public:
 	MeshRenderer() = default;
 	MeshRenderer(const Component& componentData);
-	MeshRenderer(const Component& componentData, const std::string& path);
 	~MeshRenderer();
 
+	void LoadFromOBJ(const std::string& path);
+	void LoadFromHeightMap(const std::string& path);
 	void GenerateQuad();
 	std::shared_ptr<IndexBuffer> GetIndexBuffer() const;
 	std::shared_ptr<VertexArray> GetVertexArray() const;
@@ -29,6 +31,7 @@ private:
 	std::shared_ptr<VertexBuffer> m_VertexBuffer;
 	std::shared_ptr<VertexArray> m_VertexArray;
 	std::unique_ptr<ModelMesh> m_ModelMesh;
+
 
 
 };

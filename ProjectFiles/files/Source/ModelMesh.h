@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <glm.hpp>
+#include "stb_image.h"
 
 struct VectorComponents
 {
@@ -12,23 +13,26 @@ class ModelMesh
 {
 public:
 
-	ModelMesh() = default;
-	ModelMesh(const std::string& path);
+	ModelMesh();
 	~ModelMesh();
 
 
+	void GenerateQuadData();
+	void ParseOBJ(const std::string& path);
+	void ParseHeightMap(const std::string& path);
 	std::vector<uint32_t> GetIndices();
 	std::vector<float> GetVertices();
 	glm::vec3 GetHighestVert() const;
 	glm::vec3 GetLowestVert() const;
-	void GenerateQuadData();
 
 private:
 
+	void Clear();
 	void CombineVertData(std::vector<glm::vec3>& vertices, std::vector<glm::vec3>& normals, std::vector<uint32_t>& vertIndices, std::vector<uint32_t>& normalIndices);
 	glm::vec3 CheckForHighestValue(const std::vector<glm::vec3>& vector);
 	glm::vec3 CheckForLowestValue(const std::vector<glm::vec3>& vector);
 	VectorComponents GetVectorComponents(const std::vector <glm::vec3>& vector);
+	
 
 private:
 

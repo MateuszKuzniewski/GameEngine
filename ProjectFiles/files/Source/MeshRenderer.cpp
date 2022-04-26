@@ -2,14 +2,7 @@
 
 MeshRenderer::MeshRenderer(const Component& componentData) : Component(componentData)
 {
-
-}
-
-MeshRenderer::MeshRenderer(const Component& componentData, const std::string& path) : Component(componentData)
-{
-	m_ModelMesh = std::make_unique<ModelMesh>(path);
-	GenerateBuffers(m_ModelMesh->GetVertices(), m_ModelMesh->GetIndices());
-
+    m_ModelMesh = std::make_unique<ModelMesh>();
 }
 
 MeshRenderer::~MeshRenderer()
@@ -24,9 +17,9 @@ void MeshRenderer::GenerateBuffers(const std::vector<float>& vertices, const std
         exit(1);
     }
 
-    m_VertexArray = std::make_unique<VertexArray>();
+    m_VertexArray  = std::make_unique<VertexArray>();
     m_VertexBuffer = std::make_shared<VertexBuffer>(&vertices[0], vertices.size() * sizeof(*vertices.data()));
-    m_IndexBuffer = std::make_shared<IndexBuffer>(&indices[0], indices.size());
+    m_IndexBuffer  = std::make_shared<IndexBuffer>(&indices[0], indices.size());
 
     BufferLayout layout = {
         { ShaderDataType::Float3, "a_Position" },
@@ -41,9 +34,20 @@ void MeshRenderer::GenerateBuffers(const std::vector<float>& vertices, const std
     m_VertexArray->AddIndexBuffer(m_IndexBuffer);
 }
 
+void MeshRenderer::LoadFromOBJ(const std::string& path)
+{
+    m_ModelMesh->ParseOBJ(path);
+    GenerateBuffers(m_ModelMesh->GetVertices(), m_ModelMesh->GetIndices());
+}
+
+void MeshRenderer::LoadFromHeightMap(const std::string& path)
+{
+    //m_ModelMesh->ParseHeightMap(path);
+    //GenerateBuffers(m_TerrainMesh->GetVertices(), m_ModelMesh->GetIndices());
+}
+
 void MeshRenderer::GenerateQuad()
 {
-	m_ModelMesh = std::make_unique<ModelMesh>();
 	m_ModelMesh->GenerateQuadData();
 	GenerateBuffers(m_ModelMesh->GetVertices(), m_ModelMesh->GetIndices());
 }
