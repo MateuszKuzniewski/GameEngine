@@ -99,18 +99,62 @@ void ModelMesh::ParseHeightMap(const std::string& path)
 
 	int width, height, channels;
 	unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+
+	float yScale = 128.0f / 256.0f;
+	float yShift = 32.0f;
+
+	for (uint32_t i = 0; i < height; i++)
+	{
+		for (uint32_t j = 0; j < width; j++)
+		{
+			unsigned char* texel = data + (j + width * i) * channels;
+			unsigned char y = texel[0];
+			glm::vec3 verts = glm::vec3(-width / 2.0f + j, (int)y * yScale - yShift, -height / 2.0f + i);
+			m_Vertices.push_back(verts);
+		}
+	}
+	stbi_image_free(data);
+
+	for (uint32_t i = 0; i < height - 1; i++)
+	{
+		for (uint32_t j = 0; j < width; j++)
+		{
+			for (uint32_t k = 0; k < 2; k++)
+			{
+				m_VertexIndices.push_back(j + width * (i + k));
+			}
+		}
+	}
+
+
+	uint32_t size = m_VertexIndices.size();
+	int index = 0;
+	m_IndicesData.push_back(index);
+
+	for (uint32_t i = 0; i < size; i++)
+	{
+		int indicesValue = m_VertexIndices[i];
+		glm::vec3 data = m_Vertices[indicesValue];
+		m_VertData.push_back(data.x);
+		m_VertData.push_back(data.y);
+		m_VertData.push_back(data.z);
+
+		index++;
+		m_IndicesData.push_back(index);
+	}
 }
 
 void ModelMesh::Clear()
-{
-	m_VertexIndices.clear();
-	m_TextureIndices.clear();
-	m_NormalIndices.clear();
+{ 
 	m_Vertices.clear();
 	m_Normals.clear();
 	m_TextureCoordinates.clear();
+	m_VertexIndices.clear();
+	m_TextureIndices.clear();
+	m_NormalIndices.clear();
 	m_VertData.clear();
 	m_IndicesData.clear();
+
 }
 
 void ModelMesh::CombineVertData(std::vector<glm::vec3>& vertices, std::vector<glm::vec3>& normals, std::vector<uint32_t>& vertIndices, std::vector<uint32_t>& normalIndices)
@@ -141,6 +185,7 @@ void ModelMesh::CombineVertData(std::vector<glm::vec3>& vertices, std::vector<gl
 		
 	}
 }
+
 VectorComponents ModelMesh::GetVectorComponents(const std::vector<glm::vec3>& vector)
 {
 	/* Break down 2D Vector into separate 1D vectors to be able to access individual x,y,z components in those vectors */
@@ -192,8 +237,7 @@ glm::vec3 ModelMesh::CheckForLowestValue(const std::vector<glm::vec3>& vector)
 
 void ModelMesh::GenerateQuadData()
 {
-	m_VertData.clear();
-	m_IndicesData.clear();
+	Clear();
 
 	std::vector<glm::vec3> vertPositions =
 	{
@@ -225,12 +269,12 @@ void ModelMesh::GenerateQuadData()
 
 }
 
-std::vector<uint32_t> ModelMesh::GetIndices()
+std::vector<uint32_t> ModelMesh::GetIndices() const
 {
 	return m_IndicesData;
 }
 
-std::vector<float> ModelMesh::GetVertices()
+std::vector<float> ModelMesh::GetVertices() const
 {
 	return m_VertData;
 }

@@ -3,7 +3,7 @@
 
 Rigidbody::Rigidbody() : m_Rigidbody(NULL), m_Collider(NULL)
 {
-	
+
 }
 
 Rigidbody::Rigidbody(const Component& componentData) : Component(componentData), m_Position(rp3d::Vector3(0.0f, 0.0f, 0.0f)), m_Collider(NULL)

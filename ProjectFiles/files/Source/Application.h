@@ -24,9 +24,10 @@ private:
 
 	std::shared_ptr<Shader> m_Shader;
 	std::unique_ptr<Texture> m_Texture;
+	std::unique_ptr<Renderer> m_Renderer;
 	std::shared_ptr<GameObject> m_MonkeyHead;
 	std::shared_ptr<GameObject> m_Ground;
-	std::unique_ptr<Renderer> m_Renderer;
+	std::shared_ptr<GameObject> m_Terrain;
 	rp3d::PhysicsCommon m_PhysicsCommon;
 	rp3d::PhysicsWorld* m_PhysicsWorld;
 	rp3d::PhysicsWorld::WorldSettings m_WorldSettings;

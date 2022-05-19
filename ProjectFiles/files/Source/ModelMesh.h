@@ -20,8 +20,8 @@ public:
 	void GenerateQuadData();
 	void ParseOBJ(const std::string& path);
 	void ParseHeightMap(const std::string& path);
-	std::vector<uint32_t> GetIndices();
-	std::vector<float> GetVertices();
+	std::vector<uint32_t> GetIndices() const;
+	std::vector<float> GetVertices() const;
 	glm::vec3 GetHighestVert() const;
 	glm::vec3 GetLowestVert() const;
 
@@ -42,6 +42,7 @@ private:
 	std::vector<glm::vec3> m_Vertices, m_Normals;
 	std::vector<glm::vec2> m_TextureCoordinates;
 
+	// Output variables
 	std::vector<float> m_VertData; 
 	std::vector<uint32_t> m_IndicesData; 
 

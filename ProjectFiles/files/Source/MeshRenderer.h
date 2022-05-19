@@ -10,7 +10,6 @@
 class MeshRenderer : public Component
 {
 public:
-	MeshRenderer() = default;
 	MeshRenderer(const Component& componentData);
 	~MeshRenderer();
 
