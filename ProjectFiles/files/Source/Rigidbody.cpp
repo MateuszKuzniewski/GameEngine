@@ -56,7 +56,7 @@ rp3d::Vector3 Rigidbody::GetPosition()
     return m_Rigidbody->getTransform().getPosition();
 }
 
-void Rigidbody::SetPositon(const rp3d::Vector3& position)
+void Rigidbody::SetPosition(const rp3d::Vector3& position)
 {
     m_Position = position;
     UpdateTransform();

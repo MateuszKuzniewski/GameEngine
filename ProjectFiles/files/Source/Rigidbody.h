@@ -10,7 +10,7 @@ public:
 	~Rigidbody();
 
 	void SetRigidbodyType(rp3d::BodyType type);
-	void SetPositon(const rp3d::Vector3& position); 
+	void SetPosition(const rp3d::Vector3& position); 
 	void SetRotation(const rp3d::Vector3& rotation);
 
 	void EnableGravity(bool state);

@@ -44,7 +44,7 @@ void Application::Run()
     monkeyHeadMesh.LoadFromOBJ(assetPath + "monkey.obj");
     monkeyHeadRB.AddSphereCollider(1.0f);
     monkeyHeadRB.SetPhysicalMaterialProperties(0.5f, 0.5f);
-    monkeyHeadRB.SetPositon(rp3d::Vector3(0.0f, 10.0f, 0.0f));
+    monkeyHeadRB.SetPosition(rp3d::Vector3(0.0f, 10.0f, 0.0f));
 
     
 
@@ -69,7 +69,7 @@ void Application::Run()
     //terrainMesh.LoadFromHeightMap(assetPath + "terrain.png");
     terrainMesh.LoadFromOBJ(assetPath + "terrain.obj");
     terrainRB.SetRigidbodyType(rp3d::BodyType::STATIC);
-    terrainRB.SetPositon(rp3d::Vector3(0.0f, -10.0f, 0.0f));
+    terrainRB.SetPosition(rp3d::Vector3(0.0f, -10.0f, 0.0f));
     terrainRB.AddConcaveColldier(terrainMesh.GetRawVertices(),
         terrainMesh.GetRawNormals(), terrainMesh.GetIndices());
 
