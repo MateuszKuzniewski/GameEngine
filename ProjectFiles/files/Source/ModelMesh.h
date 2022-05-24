@@ -22,9 +22,11 @@ public:
 	void ParseHeightMap(const std::string& path);
 	std::vector<uint32_t> GetIndices() const;
 	std::vector<float> GetVertices() const;
+	std::vector<float> GetRawVertices();
+	std::vector<float> GetRawNormals();
+	std::vector<uint32_t> GetRawIndices() const;
 	glm::vec3 GetHighestVert() const;
 	glm::vec3 GetLowestVert() const;
-
 private:
 
 	void Clear();
@@ -41,7 +43,8 @@ private:
 	std::vector<uint32_t> m_VertexIndices, m_TextureIndices, m_NormalIndices;
 	std::vector<glm::vec3> m_Vertices, m_Normals;
 	std::vector<glm::vec2> m_TextureCoordinates;
-
+	std::vector<float> rawVertices;
+	std::vector<float> rawNormals;
 	// Output variables
 	std::vector<float> m_VertData; 
 	std::vector<uint32_t> m_IndicesData; 

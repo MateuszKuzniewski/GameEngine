@@ -25,6 +25,8 @@ public:
 	void AddBoxCollider(const rp3d::Vector3& halfPoints);
 	void AddSphereCollider(const float radius);
 	void AddCapsuleCollider(const float radius, const float height);
+	void AddConcaveColldier(const std::vector<float>& vertices, const std::vector<float>& normals, const std::vector<uint32_t>& indices);
+	//void AddConcaveColldier(float* vertices, uint32_t* indices);
 	void SetPhysicalMaterialProperties(const float bounciness, const float friction);
 
 private:
@@ -36,7 +38,13 @@ private:
 	rp3d::Quaternion m_Orientation;
 	rp3d::Vector3 m_EulerAngles;
 	rp3d::Transform m_Transform;
-
+	
 	rp3d::RigidBody* m_Rigidbody;
 	rp3d::Collider* m_Collider;
+   
+	// needed for creating concave mesh collider
+	std::vector<float> m_Vertices;
+	std::vector<float> m_Normals;
+	std::vector<uint32_t> m_Indices;
+
 };

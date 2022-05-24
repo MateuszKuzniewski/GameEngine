@@ -44,9 +44,11 @@ void Application::Run()
     monkeyHeadMesh.LoadFromOBJ(assetPath + "monkey.obj");
     monkeyHeadRB.AddSphereCollider(1.0f);
     monkeyHeadRB.SetPhysicalMaterialProperties(0.5f, 0.5f);
+    monkeyHeadRB.SetPositon(rp3d::Vector3(0.0f, 10.0f, 0.0f));
 
+    
 
-    rp3d::Vector3 colldierSize(5.0f, 0.2f, 5.0f);
+  /*  rp3d::Vector3 colldierSize(5.0f, 0.2f, 5.0f);
     m_Ground = std::make_shared<GameObject>();
     m_Ground->AddComponent<MeshRenderer>(componentData);
     m_Ground->AddComponent<Rigidbody>(componentData);
@@ -57,16 +59,22 @@ void Application::Run()
     groundRB.SetPositon(rp3d::Vector3(0.0f, -10.0f, -5.0f));
     groundRB.SetRotation(rp3d::Vector3(0.0f, 0.0f, 45.0f));
     groundRB.AddBoxCollider(colldierSize);
-    groundRB.SetPhysicalMaterialProperties(0.5f, 0.5f);
+    groundRB.SetPhysicalMaterialProperties(0.5f, 0.5f);*/
 
     m_Terrain = std::make_shared<GameObject>();
     m_Terrain->AddComponent<MeshRenderer>(componentData);
     m_Terrain->AddComponent<Rigidbody>(componentData);
     auto& terrainRB = m_Terrain->GetComponent<Rigidbody>();
     auto& terrainMesh = m_Terrain->GetComponent<MeshRenderer>();
-    terrainMesh.LoadFromHeightMap(assetPath + "terrain.png");
+    //terrainMesh.LoadFromHeightMap(assetPath + "terrain.png");
+    terrainMesh.LoadFromOBJ(assetPath + "terrain.obj");
     terrainRB.SetRigidbodyType(rp3d::BodyType::STATIC);
-    terrainRB.SetPositon(rp3d::Vector3(0, -20, 0));
+    terrainRB.SetPositon(rp3d::Vector3(0.0f, -10.0f, 0.0f));
+    terrainRB.AddConcaveColldier(terrainMesh.GetRawVertices(),
+        terrainMesh.GetRawNormals(), terrainMesh.GetIndices());
+
+
+
 
     while (!glfwWindowShouldClose(m_AppWindow->GetWindow()))
     {
@@ -84,11 +92,12 @@ void Application::Run()
             m_PhysicsWorld->update(dt);
             accumulator -= dt;
         }
+        
 
         m_Renderer->Setup();
         m_Renderer->Submit(monkeyHeadRB.GetOpenGLTransform(), monkeyHeadMesh.GetVertexArray(), monkeyHeadMesh.GetIndexBuffer(), m_Shader, m_CameraInstance);
-        m_Renderer->Submit(groundRB.GetOpenGLTransform(), groundMesh.GetVertexArray(), groundMesh.GetIndexBuffer(), m_Shader, m_CameraInstance);
         m_Renderer->Submit(terrainRB.GetOpenGLTransform(), terrainMesh.GetVertexArray(), terrainMesh.GetIndexBuffer(), m_Shader, m_CameraInstance);
+        //m_Renderer->Submit(groundRB.GetOpenGLTransform(), groundMesh.GetVertexArray(), groundMesh.GetIndexBuffer(), m_Shader, m_CameraInstance);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(m_AppWindow->GetWindow());

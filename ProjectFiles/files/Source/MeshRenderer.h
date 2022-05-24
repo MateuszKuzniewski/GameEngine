@@ -18,6 +18,11 @@ public:
 	void GenerateQuad();
 	std::shared_ptr<IndexBuffer> GetIndexBuffer() const;
 	std::shared_ptr<VertexArray> GetVertexArray() const;
+	std::vector<float> GetRawVertices() const;
+	std::vector<float> GetRawNormals() const;
+	std::vector<uint32_t> GetIndices() const;
+	
+
 
 private:
 
@@ -29,7 +34,7 @@ private:
 	std::shared_ptr<IndexBuffer> m_IndexBuffer;
 	std::shared_ptr<VertexBuffer> m_VertexBuffer;
 	std::shared_ptr<VertexArray> m_VertexArray;
-	std::unique_ptr<ModelMesh> m_ModelMesh;
+	std::shared_ptr <ModelMesh> m_ModelMesh;
 
 
 

@@ -2,8 +2,7 @@
 
 MeshRenderer::MeshRenderer(const Component& componentData) : Component(componentData)
 {
-   
-
+    m_ModelMesh = std::make_shared<ModelMesh>();
 }
 
 MeshRenderer::~MeshRenderer()
@@ -11,6 +10,7 @@ MeshRenderer::~MeshRenderer()
     m_VertexBuffer->Unbind();
     m_IndexBuffer->Unbind();
     m_VertexArray->Unbind();
+
 }
 
 void MeshRenderer::GenerateBuffers(const std::vector<float>& vertices, const std::vector<uint32_t>& indices)
@@ -42,21 +42,18 @@ void MeshRenderer::GenerateBuffers(const std::vector<float>& vertices, const std
 
 void MeshRenderer::LoadFromOBJ(const std::string& path)
 {
-    m_ModelMesh = std::make_unique<ModelMesh>();
     m_ModelMesh->ParseOBJ(path);
     GenerateBuffers(m_ModelMesh->GetVertices(), m_ModelMesh->GetIndices());
 }
 
 void MeshRenderer::LoadFromHeightMap(const std::string& path)
 {
-    m_ModelMesh = std::make_unique<ModelMesh>();
     m_ModelMesh->ParseHeightMap(path);
     GenerateBuffers(m_ModelMesh->GetVertices(), m_ModelMesh->GetIndices());
 }
 
 void MeshRenderer::GenerateQuad()
 {
-    m_ModelMesh = std::make_unique<ModelMesh>();
 	m_ModelMesh->GenerateQuadData();
 	GenerateBuffers(m_ModelMesh->GetVertices(), m_ModelMesh->GetIndices());
 }
@@ -69,5 +66,20 @@ std::shared_ptr<IndexBuffer> MeshRenderer::GetIndexBuffer() const
 std::shared_ptr<VertexArray> MeshRenderer::GetVertexArray() const
 {
 	return m_VertexArray;
+}
+
+std::vector<float> MeshRenderer::GetRawVertices() const
+{
+    return m_ModelMesh->GetRawVertices();
+}
+
+std::vector<float> MeshRenderer::GetRawNormals() const
+{
+    return m_ModelMesh->GetRawNormals();
+}
+
+std::vector<uint32_t> MeshRenderer::GetIndices() const
+{
+    return m_ModelMesh->GetRawIndices();
 }
 

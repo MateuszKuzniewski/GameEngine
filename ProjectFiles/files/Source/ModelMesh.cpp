@@ -16,7 +16,6 @@ ModelMesh::~ModelMesh()
 
 void ModelMesh::ParseOBJ(const std::string& path)
 {
-	Clear();
 	std::ifstream inputStream(path);
 	FILE* file = fopen(path.c_str(), "r");
 
@@ -95,7 +94,6 @@ void ModelMesh::ParseOBJ(const std::string& path)
 
 void ModelMesh::ParseHeightMap(const std::string& path)
 {
-	Clear();
 
 	int width, height, channels;
 	unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
@@ -237,7 +235,6 @@ glm::vec3 ModelMesh::CheckForLowestValue(const std::vector<glm::vec3>& vector)
 
 void ModelMesh::GenerateQuadData()
 {
-	Clear();
 
 	std::vector<glm::vec3> vertPositions =
 	{
@@ -277,6 +274,38 @@ std::vector<uint32_t> ModelMesh::GetIndices() const
 std::vector<float> ModelMesh::GetVertices() const
 {
 	return m_VertData;
+}
+
+std::vector<float> ModelMesh::GetRawVertices()
+{
+	// returns array of vert coordinates without normals and UVs
+	rawVertices.clear();
+	for (int i = 0; i < m_Vertices.size(); i++)
+	{
+		glm::vec3 data = m_Vertices[i];
+		rawVertices.push_back(data.x);
+		rawVertices.push_back(data.y);
+		rawVertices.push_back(data.z);
+	}
+	return rawVertices;
+}
+
+std::vector<float> ModelMesh::GetRawNormals()
+{
+	rawNormals.clear();
+	for (int i = 0; i < m_Vertices.size(); i++)
+	{
+		glm::vec3 data = m_Normals[i];
+		rawNormals.push_back(data.x);
+		rawNormals.push_back(data.y);
+		rawNormals.push_back(data.z);
+	}
+	return rawNormals;
+}
+
+std::vector<uint32_t> ModelMesh::GetRawIndices() const
+{
+	return m_VertexIndices;
 }
 
 glm::vec3 ModelMesh::GetHighestVert() const

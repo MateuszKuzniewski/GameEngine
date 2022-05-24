@@ -13,6 +13,7 @@ Rigidbody::Rigidbody(const Component& componentData) : Component(componentData),
     m_Transform = transform;
 
     m_Rigidbody = m_PhysicsWorld->createRigidBody(m_Transform);
+
 }
 
 Rigidbody::~Rigidbody()
@@ -106,6 +107,35 @@ void Rigidbody::AddSphereCollider(const float radius)
 void Rigidbody::AddCapsuleCollider(const float radius, const float height)
 {
     rp3d::CapsuleShape* shape = m_PhysicsCommon->createCapsuleShape(radius, height);
+    m_Collider = m_Rigidbody->addCollider(shape, m_Transform);
+
+}
+
+void Rigidbody::AddConcaveColldier(const std::vector<float>& vertices, const std::vector<float>& normals, const std::vector<uint32_t>& indices)
+//void Rigidbody::AddConcaveColldier(float* vertices, uint32_t* indices)
+{
+    m_Vertices.clear();
+    m_Normals.clear();
+    m_Indices.clear();
+
+    m_Vertices.assign(vertices.begin(), vertices.end());
+    m_Normals.assign(normals.begin(), normals.end());
+    m_Indices.assign(indices.begin(), indices.end());
+
+    uint32_t numberOfVertices = (m_Vertices.size() / 3);
+    uint32_t numberOfTriangles = (m_Indices.size() / 3);
+
+    rp3d::TriangleVertexArray* triangleArray = new rp3d::TriangleVertexArray(
+        numberOfVertices,  &m_Vertices[0], 3 * sizeof(float),
+        numberOfTriangles, &m_Indices[0], 3 * sizeof(uint32_t),
+        rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE, 
+        rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
+
+
+    rp3d::TriangleMesh* triangleMesh = m_PhysicsCommon->createTriangleMesh();
+    triangleMesh->addSubpart(triangleArray);
+   
+    rp3d::ConcaveMeshShape* shape = m_PhysicsCommon->createConcaveMeshShape(triangleMesh);
     m_Collider = m_Rigidbody->addCollider(shape, m_Transform);
 
 }
