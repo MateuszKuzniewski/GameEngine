@@ -17,7 +17,7 @@ Rigidbody::Rigidbody(const Component& componentData) : Component(componentData),
 }
 
 Rigidbody::~Rigidbody()
-{
+{   
 
 }
 
@@ -127,8 +127,10 @@ void Rigidbody::AddConcaveColldier(const std::vector<float>& vertices, const std
 
     rp3d::TriangleVertexArray* triangleArray = new rp3d::TriangleVertexArray(
         numberOfVertices,  &m_Vertices[0], 3 * sizeof(float),
+        &m_Normals[0], 3 * sizeof(float),
         numberOfTriangles, &m_Indices[0], 3 * sizeof(uint32_t),
         rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE, 
+        rp3d::TriangleVertexArray::NormalDataType::NORMAL_FLOAT_TYPE,
         rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
 
 
@@ -137,6 +139,7 @@ void Rigidbody::AddConcaveColldier(const std::vector<float>& vertices, const std
    
     rp3d::ConcaveMeshShape* shape = m_PhysicsCommon->createConcaveMeshShape(triangleMesh);
     m_Collider = m_Rigidbody->addCollider(shape, m_Transform);
+
 
 }
 

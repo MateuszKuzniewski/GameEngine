@@ -2,7 +2,7 @@
 
 MeshRenderer::MeshRenderer(const Component& componentData) : Component(componentData)
 {
-    m_ModelMesh = std::make_shared<ModelMesh>();
+    m_ModelMesh = std::make_unique<ModelMesh>();
 }
 
 MeshRenderer::~MeshRenderer()
