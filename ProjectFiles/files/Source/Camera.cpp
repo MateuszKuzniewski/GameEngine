@@ -63,15 +63,15 @@ void Camera::RegisterKeyboardInput(GLFWwindow* window)
 
 	// z
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		m_Position -= deltaSpeed * glm::vec3(0.0f, 0.0f, 1.0f);
+		m_Position += deltaSpeed * GetViewDir();
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		m_Position += deltaSpeed * glm::vec3(0.0f, 0.0f, 1.0f);
+		m_Position -= deltaSpeed * GetViewDir();
 
 	// x
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		m_Position -= deltaSpeed * glm::vec3(1.0f, 0.0f, 0.0f);
+		m_Position -= deltaSpeed * GetRightDirection();
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		m_Position += deltaSpeed * glm::vec3(1.0f, 0.0f, 0.0f);
+		m_Position += deltaSpeed * GetRightDirection();
 
 	// y
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
@@ -146,7 +146,7 @@ void Camera::MouseMove(const glm::vec2& delta)
 }
 
 
-glm::quat Camera::GetOrientation() const
+glm::vec3 Camera::GetOrientation() const
 {
 	return glm::vec3(-m_Pitch, -m_Yaw, -m_Roll);
 }

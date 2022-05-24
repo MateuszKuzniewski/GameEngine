@@ -27,7 +27,7 @@ public:
 
 
 
-	glm::quat GetOrientation() const;
+	glm::vec3 GetOrientation() const;
 	glm::mat4 GetViewMatrix() const;
 	glm::mat4 GetViewProjectionMatrix();
 	glm::vec3 GetUpVector() const { return m_UpVector; };
@@ -56,7 +56,7 @@ private:
 	glm::vec3 m_ForwardVector = { 0.0f, 0.0f, -1.0f };
 
 
-	float m_CameraSpeed = 0.0003f;
+	float m_CameraSpeed = 0.001f;
 
 	float m_FOV;
 	float m_AspectRatio;
