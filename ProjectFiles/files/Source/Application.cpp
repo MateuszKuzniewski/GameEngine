@@ -2,7 +2,9 @@
 #include <iostream>
 #include <string>
 #include <filesystem>
-
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 
 Application::Application()
 {
@@ -14,6 +16,9 @@ Application::Application()
 Application::~Application()
 {
     m_PhysicsCommon.destroyPhysicsWorld(m_PhysicsWorld);
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
     delete m_AppWindow;
 }
 
@@ -70,41 +75,72 @@ void Application::Run()
     terrainMesh.LoadFromOBJ(assetPath + "terrain.obj");
     terrainRB.SetRigidbodyType(rp3d::BodyType::STATIC);
     terrainRB.SetPosition(rp3d::Vector3(0.0f, -10.0f, 0.0f));
-    terrainRB.AddConcaveColldier(terrainMesh.GetRawVertices(),
-        terrainMesh.GetRawNormals(), terrainMesh.GetIndices());
+    terrainRB.AddConcaveColldier(terrainMesh.GetRawVertices(), terrainMesh.GetRawNormals(), terrainMesh.GetIndices());
 
 
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); 
+    (void)io; // ??? tutorial said so
 
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(m_AppWindow->GetWindow(), true);
+    ImGui_ImplOpenGL3_Init("#version 330");
 
+    float sceneColour[4] = { 0.5f, 1.0f, 0.5f, 1.0f };
+    float averageFPS = 0;
+    float frameCounter = 0;
     while (!glfwWindowShouldClose(m_AppWindow->GetWindow()))
     {
-        m_CameraInstance.RegisterKeyboardInput(m_AppWindow->GetWindow());
-        m_CameraInstance.RegisterMouseInput(m_AppWindow->GetWindow());
+        //m_CameraInstance.RegisterKeyboardInput(m_AppWindow->GetWindow());
+       // m_CameraInstance.RegisterMouseInput(m_AppWindow->GetWindow());
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
 
-      
+
+
         double newTime = glfwGetTime();
         double frameTime = newTime - currentTime;
+        averageFPS = frameCounter / frameTime;
         currentTime = newTime;
         accumulator += frameTime;
-
+        if (frameCounter > 200000) frameCounter = 0;
         while (accumulator >= dt) 
         {
             m_PhysicsWorld->update(dt);
             accumulator -= dt;
+           
         }
         
 
         m_Renderer->Setup();
+        m_Shader->UploadUniformVec3("u_SceneColour", glm::vec3(sceneColour[0], sceneColour[1], sceneColour[2]));
         m_Renderer->Submit(monkeyHeadRB.GetOpenGLTransform(), monkeyHeadMesh.GetVertexArray(), monkeyHeadMesh.GetIndexBuffer(), m_Shader, m_CameraInstance);
         m_Renderer->Submit(terrainRB.GetOpenGLTransform(), terrainMesh.GetVertexArray(), terrainMesh.GetIndexBuffer(), m_Shader, m_CameraInstance);
         //m_Renderer->Submit(groundRB.GetOpenGLTransform(), groundMesh.GetVertexArray(), groundMesh.GetIndexBuffer(), m_Shader, m_CameraInstance);
 
+ 
+        ImGui::Begin("Scene");
+        ImGui::Text("Scene Colour");
+        ImGui::ColorEdit4("Colour", sceneColour);
+        ImGui::Text("FPS %d", averageFPS);
+        ImGui::End();
+
+
+
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        frameCounter++;
+
         /* Swap front and back buffers */
         glfwSwapBuffers(m_AppWindow->GetWindow());
-
         /* Poll for and process events */
         glfwPollEvents();
     }
+
+
 }
 
 

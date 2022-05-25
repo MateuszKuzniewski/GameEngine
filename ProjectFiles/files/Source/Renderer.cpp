@@ -1,5 +1,4 @@
 #include "Renderer.h"
-#include "Rigidbody.h"
 
 Renderer::Renderer()
 {

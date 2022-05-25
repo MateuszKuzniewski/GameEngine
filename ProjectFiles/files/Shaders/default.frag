@@ -9,6 +9,7 @@ in vec3 fragPos;
 uniform sampler2D u_Texture;
 uniform mat4 u_ViewProjection;
 uniform vec3 u_ViewPos;
+uniform vec3 u_SceneColour;
 
 float ambientLightStrength = 0.2f;
 float diffuseLightStrength = 0.6f;
@@ -33,7 +34,7 @@ float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
 vec3 specularLight = specularLightStrength * spec * lightColor;
 
 
-vec3 result = (ambientLight + diffuseLight + specularLight) * objectColor;
+vec3 result = (ambientLight + diffuseLight + specularLight) * u_SceneColour;
 
 void main()
 {
