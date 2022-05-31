@@ -4,9 +4,7 @@ GUI::GUI(Window* window)
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    (void)io; // ??? tutorial said so
-    
+ 
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window->GetWindow(), true);
     ImGui_ImplOpenGL3_Init("#version 460");

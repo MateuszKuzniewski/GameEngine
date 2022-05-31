@@ -1,9 +1,13 @@
 #pragma once
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
-#include <GLFW/glfw3.h>
 #include <gtc/quaternion.hpp>
 #include "Time.h"
+
+enum MoveDirection
+{
+	UP, DOWN, LEFT, RIGHT, FORWARD, BACKWARD
+};
 
 class Camera
 {
@@ -15,17 +19,12 @@ public:
 		return m_Instance;
 	}
 
-	void RegisterKeyboardInput(GLFWwindow* window);
-	void RegisterMouseInput(GLFWwindow* window);
+	void Move(MoveDirection direction);
 	void UpdateProjectionMatrix();
 	void UpdateViewMatrix();
 	void MouseRotate(const glm::vec2& delta);
-	void MousePressedState(const bool& state, int button);
 	void MouseOrbit(const glm::vec2& delta);
 	void MouseMove(const glm::vec2& delta);
-
-
-
 
 	glm::vec3 GetOrientation() const;
 	glm::mat4 GetViewMatrix() const;
@@ -36,13 +35,6 @@ public:
 	glm::vec3 GetPosition() const { return m_Position;  }
 	glm::vec3 GetForwardVector() { return m_ForwardVector; }
 
-
-
-	glm::vec2 m_InitialMousePosition = { 0.0f, 0.0f };
-	glm::vec2 m_MousePos = { 0.0f, 0.0f };
-
-	bool IsLeftMouseButtonPressed();
-	bool IsRightMouseButtonPressed();
 
 private:
 
@@ -66,15 +58,10 @@ private:
 	float m_WindowWidth = 1280;
 	float m_WindowHeight = 720;
 
-	bool m_LeftMouseButtonPressed;
-	bool m_RightMouseButtonPressed;
-
 	glm::mat4 m_ViewMatrix;
 	glm::mat4 m_ProjectionMatrix;
 	glm::mat4 m_ViewProjectionMatrix;
 	
-
-
 	static Camera m_Instance;
 
 };

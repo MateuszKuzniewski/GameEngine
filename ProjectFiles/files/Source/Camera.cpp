@@ -17,22 +17,6 @@ Camera::~Camera()
 
 }
 
-
-bool Camera::IsLeftMouseButtonPressed()
-{
-	if (m_LeftMouseButtonPressed)
-		return true;
-	return false;
-}
-
-bool Camera::IsRightMouseButtonPressed()
-{
-	if (m_RightMouseButtonPressed)
-		return true;
-	return false;
-}
-
-
 void Camera::UpdateProjectionMatrix()
 {
 	m_AspectRatio = m_WindowWidth / m_WindowHeight;
@@ -56,28 +40,28 @@ glm::mat4 Camera::GetViewProjectionMatrix()
 
 
 
-void Camera::RegisterKeyboardInput(GLFWwindow* window)
+void Camera::Move(MoveDirection direction)
 {
 
 	const float deltaSpeed = m_CameraSpeed;
 
 	// x
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	if (direction == MoveDirection::LEFT)
 		m_Position -= deltaSpeed * GetRightDirection();
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	if (direction == MoveDirection::RIGHT)
 		m_Position += deltaSpeed * GetRightDirection();
 
 	// y
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+	if (direction == MoveDirection::UP)
 		m_Position += deltaSpeed * glm::vec3(0.0f, 1.0f, 0.0f);
-	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
+	if (direction == MoveDirection::DOWN)
 		m_Position -= deltaSpeed * glm::vec3(0.0f, 1.0f, 0.0f);
 
 
 	// z
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	if (direction == MoveDirection::FORWARD)
 		m_Position += deltaSpeed * GetViewDir();
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	if (direction == MoveDirection::BACKWARD)
 		m_Position -= deltaSpeed * GetViewDir();
 
 	
@@ -93,18 +77,6 @@ void Camera::MouseRotate(const glm::vec2& delta)
 	m_Pitch += delta.y * -rotationSpeed;
 }
 
-void Camera::MousePressedState(const bool& state, int button)
-{
-	switch (button)
-	{
-	case 0:
-		m_LeftMouseButtonPressed = state;
-		break;
-	case 1:
-		m_RightMouseButtonPressed = state;
-		break;
-	}
-}
 
 
 void Camera::MouseOrbit(const glm::vec2& delta)
@@ -155,73 +127,7 @@ glm::mat4 Camera::GetViewMatrix() const
 	return m_ViewMatrix;
 }
 
-static void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
-{
-	Camera& instance = Camera::GetInstance();
 
-	if (button == GLFW_MOUSE_BUTTON_LEFT)
-	{
-		if (GLFW_PRESS == action)
-		{
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			instance.MousePressedState(true, 0);
-			
-		}
-		else if (GLFW_RELEASE == action)
-		{
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			instance.MousePressedState(false, 0);
-		}
-	}
-
-	if (button == GLFW_MOUSE_BUTTON_RIGHT)
-	{
-		if (GLFW_PRESS == action)
-		{
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			instance.MousePressedState(true, 1);
-
-		}
-		else if (GLFW_RELEASE == action)
-		{
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			instance.MousePressedState(false, 1);
-		}
-	}
-}
-
-static void CursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
-{
-	Camera& instance = Camera::GetInstance();
-
-	const float scaleFactor = 0.006f;
-	
-	glm::vec2 mouse{ xpos, ypos };
-	glm::vec2 delta = (mouse - instance.m_InitialMousePosition);
-
-	instance.m_InitialMousePosition = mouse;
-
-	// Orbit
-	if (instance.IsLeftMouseButtonPressed())
-	{
-		instance.MouseOrbit(delta);
-		instance.UpdateViewMatrix();
-	}
-
-	// Move
-	if (instance.IsRightMouseButtonPressed())
-	{
-		instance.MouseMove(delta * scaleFactor);
-		instance.UpdateViewMatrix();
-	}
-	
-}
-
-void Camera::RegisterMouseInput(GLFWwindow* window)
-{
-	glfwSetMouseButtonCallback(window, MouseButtonCallback);
-	glfwSetCursorPosCallback(window, CursorPositionCallback);
-}
 
 
 

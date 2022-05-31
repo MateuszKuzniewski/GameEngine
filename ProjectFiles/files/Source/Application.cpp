@@ -36,6 +36,7 @@ void Application::Run()
     m_Texture = std::make_unique<Texture>(assetPath + "container.jpg");
     m_Shader = std::make_shared<Shader>(vertexShaderSrc, fragmentShaderSrc);
     m_GUI = std::make_unique<GUI>(m_AppWindow);
+    m_Input = std::make_unique<Input>(m_AppWindow);
     Component componentData(m_PhysicsWorld, &m_PhysicsCommon);
 
     m_MonkeyHead = std::make_shared<GameObject>();
@@ -81,8 +82,8 @@ void Application::Run()
 
     while (!glfwWindowShouldClose(m_AppWindow->GetWindow()))
     {
-        m_CameraInstance.RegisterKeyboardInput(m_AppWindow->GetWindow());
-        //m_CameraInstance.RegisterMouseInput(m_AppWindow->GetWindow());
+        m_Input->RegisterKeyboardEvents();
+        m_Input->RegisterMouseEvents();
         double newTime = glfwGetTime();
         double frameTime = newTime - currentTime;
         currentTime = newTime;
