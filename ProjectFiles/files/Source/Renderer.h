@@ -13,7 +13,7 @@ public:
 	~Renderer();
 
 	void Setup();
-	void Submit(glm::mat4 transform, std::shared_ptr<VertexArray> vertexArray, std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<Shader> shader, Camera& camera);
+	void Submit(const glm::mat4& transform, std::shared_ptr<VertexArray> vertexArray, std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<Shader> shader, Camera& camera);
 
 private:
 

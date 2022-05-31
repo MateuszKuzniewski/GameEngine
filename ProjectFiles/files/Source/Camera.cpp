@@ -59,7 +59,7 @@ glm::mat4 Camera::GetViewProjectionMatrix()
 void Camera::RegisterKeyboardInput(GLFWwindow* window)
 {
 
-	const float deltaSpeed = m_CameraSpeed * Time::GetDeltaTime();
+	const float deltaSpeed = m_CameraSpeed;
 
 	// x
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
@@ -159,7 +159,7 @@ static void MouseButtonCallback(GLFWwindow* window, int button, int action, int 
 {
 	Camera& instance = Camera::GetInstance();
 
-	/*if (button == GLFW_MOUSE_BUTTON_LEFT)
+	if (button == GLFW_MOUSE_BUTTON_LEFT)
 	{
 		if (GLFW_PRESS == action)
 		{
@@ -187,33 +187,33 @@ static void MouseButtonCallback(GLFWwindow* window, int button, int action, int 
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 			instance.MousePressedState(false, 1);
 		}
-	}*/
+	}
 }
 
 static void CursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
 {
 	Camera& instance = Camera::GetInstance();
 
-	//const float scaleFactor = 0.006f;
-	//
-	//glm::vec2 mouse{ xpos, ypos };
-	//glm::vec2 delta = (mouse - instance.m_InitialMousePosition);
+	const float scaleFactor = 0.006f;
+	
+	glm::vec2 mouse{ xpos, ypos };
+	glm::vec2 delta = (mouse - instance.m_InitialMousePosition);
 
-	//instance.m_InitialMousePosition = mouse;
+	instance.m_InitialMousePosition = mouse;
 
-	//// Orbit
-	//if (instance.IsLeftMouseButtonPressed())
-	//{
-	//	instance.MouseOrbit(delta);
-	//	instance.UpdateViewMatrix();
-	//}
+	// Orbit
+	if (instance.IsLeftMouseButtonPressed())
+	{
+		instance.MouseOrbit(delta);
+		instance.UpdateViewMatrix();
+	}
 
-	//// Move
-	//if (instance.IsRightMouseButtonPressed())
-	//{
-	//	instance.MouseMove(delta * scaleFactor);
-	//	instance.UpdateViewMatrix();
-	//}
+	// Move
+	if (instance.IsRightMouseButtonPressed())
+	{
+		instance.MouseMove(delta * scaleFactor);
+		instance.UpdateViewMatrix();
+	}
 	
 }
 

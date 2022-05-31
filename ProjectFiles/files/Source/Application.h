@@ -7,6 +7,7 @@
 #include "Rigidbody.h"
 #include "MeshRenderer.h"
 #include "GameObject.h"
+#include "GUI.h"
 #include <reactphysics3d/reactphysics3d.h>
 
 class Application
@@ -22,9 +23,10 @@ private:
 	Window* m_AppWindow;
 	Camera& m_CameraInstance = Camera::GetInstance();
 
-	std::shared_ptr<Shader> m_Shader;
 	std::unique_ptr<Texture> m_Texture;
 	std::unique_ptr<Renderer> m_Renderer;
+	std::unique_ptr<GUI> m_GUI;
+	std::shared_ptr<Shader> m_Shader;
 	std::shared_ptr<GameObject> m_MonkeyHead;
 	std::shared_ptr<GameObject> m_Ground;
 	std::shared_ptr<GameObject> m_Terrain;

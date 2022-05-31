@@ -15,7 +15,7 @@ void Renderer::Setup()
 	glClearColor(0.1f, 0.1, 0.1f, 0.1f);
 }
 
-void Renderer::Submit(glm::mat4 transform, std::shared_ptr<VertexArray> vertexArray, std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<Shader> shader, Camera& camera)
+void Renderer::Submit(const glm::mat4& transform, std::shared_ptr<VertexArray> vertexArray, std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<Shader> shader, Camera& camera)
 {
 
     shader->Bind();
