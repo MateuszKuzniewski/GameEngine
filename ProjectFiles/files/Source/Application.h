@@ -9,7 +9,7 @@
 #include "GameObject.h"
 #include "GUI.h"
 #include "Input.h"
-#include <reactphysics3d/reactphysics3d.h>
+
 
 class Application
 {

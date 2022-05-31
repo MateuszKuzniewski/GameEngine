@@ -7,6 +7,7 @@ Input::Input(Window* window) : m_Window(window)
 
 Input::~Input()
 {
+
 }
 
 void Input::RegisterMouseEvents()

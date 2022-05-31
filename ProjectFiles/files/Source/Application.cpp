@@ -33,10 +33,10 @@ void Application::Run()
     std::string fragmentShaderSrc = shaderPath + "default.frag";
 
     m_Renderer = std::make_unique<Renderer>();
-    m_Texture = std::make_unique<Texture>(assetPath + "container.jpg");
-    m_Shader = std::make_shared<Shader>(vertexShaderSrc, fragmentShaderSrc);
-    m_GUI = std::make_unique<GUI>(m_AppWindow);
-    m_Input = std::make_unique<Input>(m_AppWindow);
+    m_Texture  = std::make_unique<Texture>(assetPath + "container.jpg");
+    m_Shader   = std::make_shared<Shader>(vertexShaderSrc, fragmentShaderSrc);
+    m_GUI      = std::make_unique<GUI>(m_AppWindow);
+    m_Input    = std::make_unique<Input>(m_AppWindow);
     Component componentData(m_PhysicsWorld, &m_PhysicsCommon);
 
     m_MonkeyHead = std::make_shared<GameObject>();
