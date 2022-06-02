@@ -75,7 +75,6 @@ void GUI::SceneHierarchyPanel()
   
     for (const auto& object : objectManager.objectRegistry)
     {
-        std::cout << "x" << std::endl;
         auto& retrivedObject = *object.second;
         DrawEntity(retrivedObject);
     }

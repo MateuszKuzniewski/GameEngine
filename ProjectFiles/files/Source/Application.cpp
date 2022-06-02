@@ -50,7 +50,7 @@ void Application::Run()
     monkeyHeadRB.SetPhysicalMaterialProperties(0.5f, 0.5f);
     monkeyHeadRB.SetPosition(rp3d::Vector3(0.0f, 10.0f, 0.0f));
 
-    
+
 
   /*  rp3d::Vector3 colldierSize(5.0f, 0.2f, 5.0f);
     m_Ground = std::make_shared<GameObject>();
