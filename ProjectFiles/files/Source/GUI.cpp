@@ -56,7 +56,7 @@ void GUI::StatisticsPanel()
     ImGui::SetNextWindowSize(ImVec2(300, 100));
     ImGui::SetNextWindowPos(ImVec2(m_WindowWidth - 300, m_WindowHeight - 100));
     ImGui::Begin("Statistics");
-    ImGui::Text("Version: 0.1.6");
+    ImGui::Text("Version: 0.1.7");
     ImGui::Text("--------------");
     ImGui::Text("Average Time: %.3f ms", 1000.0f / ImGui::GetIO().Framerate);
     ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
@@ -72,13 +72,14 @@ void GUI::SceneHierarchyPanel()
     ImGui::SetNextWindowPos(ImVec2(m_WindowWidth - 300, 0));
 
     ImGui::Begin("Hierarchy");
-    
+  
     for (const auto& object : objectManager.objectRegistry)
     {
+        std::cout << "x" << std::endl;
         auto& retrivedObject = *object.second;
         DrawEntity(retrivedObject);
     }
-
+    
     ImGui::End();
 
 }
@@ -99,7 +100,7 @@ void GUI::DrawEntity(GameObject& gameObject)
 
     if (ImGui::IsItemClicked())
     {
-        std::cout << gameObject.GetID() << std::endl;
+
         bool isClicked = (gameObject.isSelected) ? false : true;
         gameObject.isSelected = isClicked;
     }
