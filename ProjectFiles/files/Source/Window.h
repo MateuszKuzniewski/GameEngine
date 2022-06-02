@@ -12,10 +12,14 @@ public:
 
 	void Destroy();
 	GLFWwindow* GetWindow() const;
-	
+	float GetWindowHeight() { return m_Height; };
+	float GetWindowWidth()  { return m_Width;  };
+
+
 private:
 
 	GLFWwindow* window;
+	float m_Height, m_Width;
 
 };
 

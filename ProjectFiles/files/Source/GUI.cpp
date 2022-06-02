@@ -1,6 +1,7 @@
 #include "GUI.h"
+#include "ObjectManager.h"
 
-GUI::GUI(Window* window)
+GUI::GUI(Window* window) : m_Window(window)
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -8,6 +9,10 @@ GUI::GUI(Window* window)
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window->GetWindow(), true);
     ImGui_ImplOpenGL3_Init("#version 460");
+
+    m_WindowWidth = m_Window->GetWindowWidth();
+    m_WindowHeight = m_Window->GetWindowHeight();
+
 }
 
 GUI::~GUI()
@@ -47,12 +52,12 @@ void GUI::StatisticsPanel()
     //ImGui::Text("Scene Colour");
     //ImGui::ColorEdit4("Colour", sceneColour);
     //ImGui::End();
-
-
-    ImGui::SetNextWindowSize(ImVec2(200, 100));
-    ImGui::SetNextWindowPos(ImVec2(1080, 620));
-
+  
+    ImGui::SetNextWindowSize(ImVec2(300, 100));
+    ImGui::SetNextWindowPos(ImVec2(m_WindowWidth - 300, m_WindowHeight - 100));
     ImGui::Begin("Statistics");
+    ImGui::Text("Version: 0.1.6");
+    ImGui::Text("--------------");
     ImGui::Text("Average Time: %.3f ms", 1000.0f / ImGui::GetIO().Framerate);
     ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
     ImGui::End();
@@ -61,19 +66,56 @@ void GUI::StatisticsPanel()
 
 void GUI::SceneHierarchyPanel()
 {
-    ImGui::SetNextWindowSize(ImVec2(200, 620));
-    ImGui::SetNextWindowPos(ImVec2(1080, 0));
+    ObjectManager& objectManager = ObjectManager::GetInstance();
+
+    ImGui::SetNextWindowSize(ImVec2(300, m_WindowHeight - 100));
+    ImGui::SetNextWindowPos(ImVec2(m_WindowWidth - 300, 0));
+
     ImGui::Begin("Hierarchy");
-    ImGui::Text("GameObject");
-    ImGui::Text("Terrain");
+    
+    for (const auto& object : objectManager.objectRegistry)
+    {
+        auto& retrivedObject = *object.second;
+        DrawEntity(retrivedObject);
+    }
+
     ImGui::End();
+
+}
+
+void GUI::DrawEntity(GameObject& gameObject)
+{
+    ImGuiTreeNodeFlags flags =  ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_SpanAvailWidth ;
+    if (gameObject.isSelected) flags |= ImGuiTreeNodeFlags_Selected;
+
+    bool opened = ImGui::TreeNodeEx(gameObject.name.c_str(), flags);
+
+    if (ImGui::IsItemHovered())
+    {
+        ImGui::BeginTooltip();
+        ImGui::TextUnformatted("Tooltip text");
+        ImGui::EndTooltip();
+    }
+
+    if (ImGui::IsItemClicked())
+    {
+        std::cout << gameObject.GetID() << std::endl;
+        bool isClicked = (gameObject.isSelected) ? false : true;
+        gameObject.isSelected = isClicked;
+    }
+
+    if (opened)
+    {
+        ImGui::TreePop();
+    }
 
 }
 
 void GUI::InspectorPanel()
 {
-    ImGui::SetNextWindowSize(ImVec2(200, 720));
+    ImGui::SetNextWindowSize(ImVec2(300, m_WindowHeight));
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::Begin("Inspector");
     ImGui::End();
 }
+

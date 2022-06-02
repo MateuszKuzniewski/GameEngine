@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-Camera Camera::m_Instance;
+Camera Camera::s_Instance;
 
 Camera::Camera()
 	: m_FOV(60), m_NearClip(0.1f), m_FarClip(1000.0f)

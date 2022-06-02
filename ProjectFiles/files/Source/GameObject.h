@@ -7,7 +7,7 @@
 class GameObject
 {
 public:
-	GameObject();
+	GameObject(uint32_t id);
 	~GameObject();
 
 	template<typename ComponentType, typename... Args>
@@ -19,10 +19,14 @@ public:
 	template<typename ComponentType>
 	bool HasComponent();
 
-private:
+	uint32_t GetID() const { return m_ID; };
 
+	std::string name;
+	bool isSelected;
+
+private:
+	uint32_t m_ID;
 	std::vector<std::unique_ptr<Component>> m_Components;
-	//std::unordered_map <uint32_t, std::unique_ptr<Component>> m_Components;
 
 };
 

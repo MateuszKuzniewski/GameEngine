@@ -2,7 +2,7 @@
 #include "Window.h"
 
 
-Window::Window(int size_x, int size_y, const char* title, GLFWmonitor* monitor, GLFWwindow* share) 
+Window::Window(int size_x, int size_y, const char* title, GLFWmonitor* monitor, GLFWwindow* share) : m_Width(size_x), m_Height(size_y)
 {
     if (!glfwInit())
         std::cout << "OpenGL: Failed to initilized GLFW" << std::endl;

@@ -16,7 +16,7 @@ public:
 	
 	static Camera& GetInstance()
 	{
-		return m_Instance;
+		return s_Instance;
 	}
 
 	void Move(MoveDirection direction);
@@ -62,7 +62,7 @@ private:
 	glm::mat4 m_ProjectionMatrix;
 	glm::mat4 m_ViewProjectionMatrix;
 	
-	static Camera m_Instance;
+	static Camera s_Instance;
 
 };
 

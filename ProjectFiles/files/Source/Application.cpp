@@ -6,7 +6,7 @@
 
 Application::Application()
 {
-    m_AppWindow = new Window(1280, 720, "App", NULL, NULL);
+    m_AppWindow = new Window(1600, 900, "App", NULL, NULL);
     m_WorldSettings.gravity = rp3d::Vector3(0, -9.81f, 0);
     m_PhysicsWorld = m_PhysicsCommon.createPhysicsWorld(m_WorldSettings);
 
@@ -39,11 +39,12 @@ void Application::Run()
     m_Input    = std::make_unique<Input>(m_AppWindow);
     Component componentData(m_PhysicsWorld, &m_PhysicsCommon);
 
-    m_MonkeyHead = std::make_shared<GameObject>();
-    m_MonkeyHead->AddComponent<MeshRenderer>(componentData);
-    m_MonkeyHead->AddComponent<Rigidbody>(componentData);
-    auto& monkeyHeadRB = m_MonkeyHead->GetComponent<Rigidbody>();
-    auto& monkeyHeadMesh = m_MonkeyHead->GetComponent<MeshRenderer>();
+    GameObject& m_MonkeyHead = m_ObjectManager.CreateGameObject();
+    m_MonkeyHead.name = "Monkey Head";
+    m_MonkeyHead.AddComponent<MeshRenderer>(componentData);
+    m_MonkeyHead.AddComponent<Rigidbody>(componentData);
+    auto& monkeyHeadRB = m_MonkeyHead.GetComponent<Rigidbody>();
+    auto& monkeyHeadMesh = m_MonkeyHead.GetComponent<MeshRenderer>();
     monkeyHeadMesh.LoadFromOBJ(assetPath + "monkey.obj");
     monkeyHeadRB.AddSphereCollider(1.0f);
     monkeyHeadRB.SetPhysicalMaterialProperties(0.5f, 0.5f);
@@ -64,11 +65,12 @@ void Application::Run()
     groundRB.AddBoxCollider(colldierSize);
     groundRB.SetPhysicalMaterialProperties(0.5f, 0.5f);*/
 
-    m_Terrain = std::make_shared<GameObject>();
-    m_Terrain->AddComponent<MeshRenderer>(componentData);
-    m_Terrain->AddComponent<Rigidbody>(componentData);
-    auto& terrainRB = m_Terrain->GetComponent<Rigidbody>();
-    auto& terrainMesh = m_Terrain->GetComponent<MeshRenderer>();
+    GameObject& m_Terrain = m_ObjectManager.CreateGameObject();
+    m_Terrain.name = "Terrain";
+    m_Terrain.AddComponent<MeshRenderer>(componentData);
+    m_Terrain.AddComponent<Rigidbody>(componentData);
+    auto& terrainRB = m_Terrain.GetComponent<Rigidbody>();
+    auto& terrainMesh = m_Terrain.GetComponent<MeshRenderer>();
     //terrainMesh.LoadFromHeightMap(assetPath + "terrain.png");
     terrainMesh.LoadFromOBJ(assetPath + "terrain.obj");
     terrainRB.SetRigidbodyType(rp3d::BodyType::STATIC);
