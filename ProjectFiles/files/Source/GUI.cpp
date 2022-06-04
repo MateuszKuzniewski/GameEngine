@@ -41,6 +41,7 @@ void GUI::Render()
     StatisticsPanel();
     SceneHierarchyPanel();
     InspectorPanel();
+    MenuPanel();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -68,8 +69,8 @@ void GUI::SceneHierarchyPanel()
 {
     ObjectManager& objectManager = ObjectManager::GetInstance();
 
-    ImGui::SetNextWindowSize(ImVec2(300, m_WindowHeight - 100));
-    ImGui::SetNextWindowPos(ImVec2(m_WindowWidth - 300, 0));
+    ImGui::SetNextWindowSize(ImVec2(300, m_WindowHeight - 120));
+    ImGui::SetNextWindowPos(ImVec2(m_WindowWidth - 300, m_WindowHeight - (m_WindowHeight - 20)));
 
     ImGui::Begin("Hierarchy");
   
@@ -113,9 +114,21 @@ void GUI::DrawEntity(GameObject& gameObject)
 
 void GUI::InspectorPanel()
 {
-    ImGui::SetNextWindowSize(ImVec2(300, m_WindowHeight));
-    ImGui::SetNextWindowPos(ImVec2(0, 0));
+    float offset = 20.0f;
+    ImGui::SetNextWindowSize(ImVec2(300, m_WindowHeight - offset));
+    ImGui::SetNextWindowPos(ImVec2(0, m_WindowHeight - (m_WindowHeight- offset)));
     ImGui::Begin("Inspector");
     ImGui::End();
+}
+
+void GUI::MenuPanel()
+{
+    ImGui::BeginMainMenuBar();
+    ImGui::MenuItem("FILE");
+    ImGui::MenuItem("EDIT");
+    ImGui::MenuItem("ASSETS");
+    ImGui::MenuItem("WINDOW");
+    ImGui::MenuItem("HELP");
+    ImGui::EndMainMenuBar();
 }
 

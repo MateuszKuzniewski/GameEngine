@@ -22,6 +22,7 @@ private:
 	void StatisticsPanel();
 	void SceneHierarchyPanel();
 	void InspectorPanel();
+	void MenuPanel();
 	void DrawEntity(GameObject& gameObject);
 
 

@@ -18,13 +18,13 @@ void Input::RegisterMouseEvents()
 
 	if (!m_IO.WantCaptureMouse)
 	{
-		if (m_IO.MouseDown[MouseCodes::LeftMouseButton]) 
+		if (m_IO.MouseDown[MouseCodes::LeftMouseButton] && glfwGetKey(m_Window->GetWindow(), GLFW_KEY_LEFT_ALT) == GLFW_PRESS)
 		{
 			glfwSetInputMode(m_Window->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 			m_Camera.MouseOrbit(glmMouseDelta);
 			m_Camera.UpdateViewMatrix();
 		}
-		else if (m_IO.MouseDown[MouseCodes::RightMouseButton])
+		else if (m_IO.MouseDown[MouseCodes::RightMouseButton] && glfwGetKey(m_Window->GetWindow(), GLFW_KEY_LEFT_ALT) == GLFW_PRESS)
 		{
 			glfwSetInputMode(m_Window->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 			m_Camera.MouseMove(glmMouseDelta * scaleFactor);
