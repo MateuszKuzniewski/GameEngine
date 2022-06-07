@@ -24,10 +24,12 @@ private:
 	void InspectorPanel();
 	void MenuPanel();
 	void DrawEntity(GameObject& gameObject);
+	void DrawComponent(GameObject& object);
 
 
 private:
 	Window* m_Window;
 	float m_WindowHeight, m_WindowWidth;
+	std::string bodyTypePreview = "static";
 };
 

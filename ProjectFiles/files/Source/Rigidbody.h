@@ -29,6 +29,8 @@ public:
 	//void AddConcaveColldier(float* vertices, uint32_t* indices);
 	void SetPhysicalMaterialProperties(const float bounciness, const float friction);
 
+	bool isGravity;
+
 private:
 	rp3d::Quaternion CreateQuaternionFromEulerAngles(const rp3d::Vector3& angles);
 	void UpdateTransform();
