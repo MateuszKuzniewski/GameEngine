@@ -2,6 +2,7 @@
 #include "Component.h"
 #include "glm.hpp"
 
+
 class Rigidbody : public Component
 {
 public:
@@ -17,10 +18,13 @@ public:
 	void ApplyForce(const rp3d::Vector3& force);
 	void ApplyForceAtLocalPosition(const rp3d::Vector3& force, const rp3d::Vector3& point);
 	void ApplyTorque(const rp3d::Vector3& torque);
-	rp3d::RigidBody* GetRP3DRigidbody();
-	rp3d::Vector3 GetPosition();
-	rp3d::Transform GetTransform();
-	glm::mat4 GetOpenGLTransform();
+	rp3d::RigidBody* GetRP3DRigidbody() const;
+	rp3d::Vector3 GetPosition() const;
+	rp3d::Vector3 GetEulerRotation() const;
+	rp3d::Transform GetTransform() const;
+	glm::mat4 GetOpenGLTransform() const;
+	std::string GetBodyTypeString() const;
+	std::string GetColliderTypeString() const;
 
 	void AddBoxCollider(const rp3d::Vector3& halfPoints);
 	void AddSphereCollider(const float radius);
@@ -30,15 +34,17 @@ public:
 	void SetPhysicalMaterialProperties(const float bounciness, const float friction);
 
 	bool isGravity;
+	rp3d::Vector3 colliderSizeVec3 = { 1.0f, 1.0f, 1.0f };
+	rp3d::Vector2 colliderSizeVec2 = { 1.0f, 1.0f };
+	float sphereRadius = 1.0f;
+
 
 private:
 	rp3d::Quaternion CreateQuaternionFromEulerAngles(const rp3d::Vector3& angles);
-	void UpdateTransform();
 
 private:
 	rp3d::Vector3 m_Position;
 	rp3d::Quaternion m_Orientation;
-	rp3d::Vector3 m_EulerAngles;
 	rp3d::Transform m_Transform;
 	
 	rp3d::RigidBody* m_Rigidbody;

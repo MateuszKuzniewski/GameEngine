@@ -30,6 +30,7 @@ private:
 private:
 	Window* m_Window;
 	float m_WindowHeight, m_WindowWidth;
-	std::string bodyTypePreview = "static";
+
+	
 };
 

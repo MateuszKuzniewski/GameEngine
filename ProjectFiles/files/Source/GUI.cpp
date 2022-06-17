@@ -59,7 +59,7 @@ void GUI::StatisticsPanel()
     ImGui::SetNextWindowSize(ImVec2(300, 100));
     ImGui::SetNextWindowPos(ImVec2(m_WindowWidth - 300, m_WindowHeight - 100));
     ImGui::Begin("Statistics");
-    ImGui::Text("Version: 0.1.7");
+    ImGui::Text("Version: 0.1.8");
     ImGui::Text("--------------");
     ImGui::Text("Average Time: %.3f ms", 1000.0f / ImGui::GetIO().Framerate);
     ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
@@ -89,7 +89,7 @@ void GUI::SceneHierarchyPanel()
 void GUI::InspectorPanel()
 {
     ObjectManager& objectManager = ObjectManager::GetInstance();
-
+   
     float offset = 20.0f;
     ImGui::SetNextWindowSize(ImVec2(300, m_WindowHeight - offset));
     ImGui::SetNextWindowPos(ImVec2(0, m_WindowHeight - (m_WindowHeight - offset)));
@@ -152,7 +152,7 @@ void GUI::DrawEntity(GameObject& gameObject)
 void GUI::DrawComponent(GameObject& object)
 {
     const ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
-    std::string componentName = "";
+    std::string componentName = "";    
 
     if (object.isSelected)
     {
@@ -161,41 +161,104 @@ void GUI::DrawComponent(GameObject& object)
             componentName = "Rigidbody";
             auto& component = object.GetComponent<Rigidbody>();
             bool opened = ImGui::TreeNodeEx(componentName.c_str(), flags);
-           
+        
+
             if (opened)
             {
                 float posSlider[3] = { component.GetPosition().x, component.GetPosition().y, component.GetPosition().z };
                 ImGui::DragFloat3("position", posSlider, 0.5f, 0.0f);
+                component.SetPosition(rp3d::Vector3(posSlider[0], posSlider[1], posSlider[2]));
 
+                float rotSlider[3] = { component.GetEulerRotation().x, component.GetEulerRotation().y, component.GetEulerRotation().z };
+                ImGui::DragFloat3("rotation", rotSlider, 0.5f, 0.0f);
+                component.SetRotation(rp3d::Vector3(rotSlider[0], rotSlider[1], rotSlider[2]));
 
-                if(ImGui::BeginCombo("Body type", bodyTypePreview.c_str()))
+                
+                ImGui::Spacing();
+                ImGui::Spacing();
+                ImGui::Separator();
+                //----------------------- Rigidbody -----------------------------------------
+                if (ImGui::BeginCombo("body type", component.GetBodyTypeString().c_str()))
                 {
                     bool isSelected = false;
                     if (ImGui::Selectable("static", isSelected ))
                     {
-                        bodyTypePreview = "static";
+                        component.SetRigidbodyType(rp3d::BodyType::STATIC);
                     }
                     if (ImGui::Selectable("dynamic", isSelected))
                     {
-
-                        bodyTypePreview = "dynamic";
+                        component.SetRigidbodyType(rp3d::BodyType::DYNAMIC);
+                     
                     }
                     if(ImGui::Selectable("kinematic", isSelected))
                     {
-
-                        bodyTypePreview = "kinematic";
+                        component.SetRigidbodyType(rp3d::BodyType::KINEMATIC);
                     }
-
 
                     ImGui::EndCombo();
                 }
-                    
 
-                ImGui::Checkbox("Gravity", &component.isGravity);
-                component.EnableGravity(component.isGravity);
+                if (component.GetBodyTypeString() == "dynamic")
+                {
+                    ImGui::Checkbox("gravity", &component.isGravity);
+                    component.EnableGravity(component.isGravity);
+                }
+                ImGui::Spacing();
+                ImGui::Spacing();
+                ImGui::Separator();
+
+
+                //----------------------- Collider -----------------------------------------
+                if (ImGui::BeginCombo("collider", component.GetColliderTypeString().c_str()))
+                {
+
+                    bool isSelected = false;
+                    if (ImGui::Selectable("none", isSelected)) {}
+                    if (ImGui::Selectable("box", isSelected))
+                    {
+                        component.AddBoxCollider(component.colliderSizeVec3);
+                    }
+                    if (ImGui::Selectable("sphere", isSelected))
+                    {
+                        component.AddSphereCollider(component.sphereRadius);
+                    }
+                    if (ImGui::Selectable("mesh", isSelected))
+                    {
+                        if(object.HasComponent<MeshRenderer>())
+                        {
+                            auto& mesh = object.GetComponent<MeshRenderer>();
+                            component.AddConcaveColldier(mesh.GetRawVertices(), mesh.GetRawNormals(), mesh.GetIndices());
+                        }
+                        else
+                        {
+                            std::cout << "Trying to add mesh collider to object without MeshRenderer component \n";
+                        }
+                    }
+
+                    ImGui::EndCombo();
+                }
+
+                if (component.GetColliderTypeString() == "box")
+                {
+
+                    float sizeSlider[3] = { component.colliderSizeVec3.x, component.colliderSizeVec3.y, component.colliderSizeVec3.z };
+                    ImGui::DragFloat3("size", sizeSlider, 0.5f, 0.0f);
+                    component.colliderSizeVec3 = rp3d::Vector3(sizeSlider[0], sizeSlider[1], sizeSlider[2]);
+                }
+                else if (component.GetColliderTypeString() == "sphere")
+                {
+                    ImGui::DragFloat("radius", &component.sphereRadius, 0.5f, 0.0f);
+                }
+                else if (component.GetColliderTypeString() == "mesh") {}
+
                 ImGui::TreePop();
+                ImGui::Spacing();
+                ImGui::Spacing();  
+                ImGui::Spacing();  
+                ImGui::Spacing();
             }
         }
+
         if (object.HasComponent<MeshRenderer>())
         {
             componentName = "MeshRenderer";

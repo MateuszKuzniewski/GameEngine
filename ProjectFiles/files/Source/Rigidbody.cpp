@@ -1,17 +1,17 @@
 #include "Rigidbody.h"
 #include <gtc/type_ptr.hpp>
 
-Rigidbody::Rigidbody() : m_Rigidbody(NULL), m_Collider(NULL)
+Rigidbody::Rigidbody() : m_Rigidbody(NULL), m_Collider(NULL), isGravity(true)
 {
 
 }
 
-Rigidbody::Rigidbody(const Component& componentData) : Component(componentData), m_Position(rp3d::Vector3(0.0f, 0.0f, 0.0f)), m_Collider(NULL)
+Rigidbody::Rigidbody(const Component& componentData) : Component(componentData), m_Position(rp3d::Vector3(0.0f, 0.0f, 0.0f)), m_Collider(NULL), isGravity(true)
 {
     m_Orientation = rp3d::Quaternion::identity();
     rp3d::Transform transform(m_Position, m_Orientation);
     m_Transform = transform;
-
+    
     m_Rigidbody = m_PhysicsWorld->createRigidBody(m_Transform);
 
 }
@@ -46,42 +46,54 @@ void Rigidbody::ApplyTorque(const rp3d::Vector3& torque)
     m_Rigidbody->applyLocalTorque(torque);
 }
 
-rp3d::RigidBody* Rigidbody::GetRP3DRigidbody()
+rp3d::RigidBody* Rigidbody::GetRP3DRigidbody() const
 {
     return m_Rigidbody;
 }
 
-rp3d::Vector3 Rigidbody::GetPosition()
+rp3d::Vector3 Rigidbody::GetPosition() const
 {
     return m_Rigidbody->getTransform().getPosition();
+}
+
+rp3d::Vector3 Rigidbody::GetEulerRotation() const
+{   
+    rp3d::Quaternion quat = m_Rigidbody->getTransform().getOrientation();
+    glm::quat newQuat;
+
+    newQuat.w = quat.w;
+    newQuat.x = quat.x;
+    newQuat.y = quat.y;
+    newQuat.z = quat.z;
+
+    glm::vec3 glmEulerAngles = glm::eulerAngles(newQuat);
+
+    rp3d::Vector3 eulerAngles(glm::degrees(glmEulerAngles.x), glm::degrees(glmEulerAngles.y), glm::degrees(glmEulerAngles.z));
+    return eulerAngles;
 }
 
 void Rigidbody::SetPosition(const rp3d::Vector3& position)
 {
     m_Position = position;
-    UpdateTransform();
+    rp3d::Transform transform(m_Position, m_Rigidbody->getTransform().getOrientation());
+    m_Rigidbody->setTransform(transform);
 }
 
 void Rigidbody::SetRotation(const rp3d::Vector3& rotation)
 {  
-    rp3d::Vector3 newRotationInRadians(glm::radians(rotation.x), glm::radians(rotation.y), glm::radians(rotation.z));
-    rp3d::Quaternion newQuat = rp3d::Quaternion::fromEulerAngles(newRotationInRadians);
-    m_Orientation = newQuat;
-    UpdateTransform();
-}
-
-void Rigidbody::UpdateTransform()
-{
-    rp3d::Transform transform(m_Position, m_Orientation);
+    rp3d::Vector3 newVec(glm::radians(rotation.x), glm::radians(rotation.y), glm::radians(rotation.z));
+    m_Orientation = rp3d::Quaternion::fromEulerAngles(newVec);
+    rp3d::Transform transform(m_Rigidbody->getTransform().getPosition(), m_Orientation);
     m_Rigidbody->setTransform(transform);
+    
 }
 
-rp3d::Transform Rigidbody::GetTransform()
+rp3d::Transform Rigidbody::GetTransform() const
 {
     return m_Rigidbody->getTransform();
 }
 
-glm::mat4 Rigidbody::GetOpenGLTransform()
+glm::mat4 Rigidbody::GetOpenGLTransform() const
 {
     rp3d::Transform pos = m_Rigidbody->getTransform();
     float mat[16];
@@ -92,23 +104,55 @@ glm::mat4 Rigidbody::GetOpenGLTransform()
     return matrix;
 }
 
+std::string Rigidbody::GetBodyTypeString() const
+{
+    if (m_Rigidbody == nullptr) return "";
+
+    auto type = m_Rigidbody->getType();
+    switch (type)
+    {
+        case rp3d::BodyType::STATIC: return "static";
+        case rp3d::BodyType::DYNAMIC: return "dynamic";
+        case rp3d::BodyType::KINEMATIC: return "kinematic";
+    }
+
+    return "no body type available";
+}
+
+std::string Rigidbody::GetColliderTypeString() const
+{
+    if (m_Collider == nullptr) return "";
+
+    auto type = m_Collider->getCollisionShape();
+    switch (type->getName())
+    {
+        case rp3d::CollisionShapeName::BOX: return "box";
+        case rp3d::CollisionShapeName::SPHERE: return "sphere";
+        case rp3d::CollisionShapeName::TRIANGLE_MESH: return "mesh";
+    }
+    return "no collider type available";
+}
+
 void Rigidbody::AddBoxCollider(const rp3d::Vector3& halfPoints)
 {
     rp3d::BoxShape* shape = m_PhysicsCommon->createBoxShape(halfPoints);
     m_Collider = m_Rigidbody->addCollider(shape, m_Transform);
+    std::cout << "Box collider added" << std::endl;
 }
 
 void Rigidbody::AddSphereCollider(const float radius)
 {
     rp3d::SphereShape* shape = m_PhysicsCommon->createSphereShape(radius);
     m_Collider = m_Rigidbody->addCollider(shape, m_Transform);
+    std::cout << "Sphere collider added" << std::endl;
 }
 
 void Rigidbody::AddCapsuleCollider(const float radius, const float height)
 {
     rp3d::CapsuleShape* shape = m_PhysicsCommon->createCapsuleShape(radius, height);
     m_Collider = m_Rigidbody->addCollider(shape, m_Transform);
-
+    std::cout << "Capsule collider added" << std::endl;
+    
 }
 
 void Rigidbody::AddConcaveColldier(const std::vector<float>& vertices, const std::vector<float>& normals, const std::vector<uint32_t>& indices)
@@ -139,7 +183,7 @@ void Rigidbody::AddConcaveColldier(const std::vector<float>& vertices, const std
    
     rp3d::ConcaveMeshShape* shape = m_PhysicsCommon->createConcaveMeshShape(triangleMesh);
     m_Collider = m_Rigidbody->addCollider(shape, m_Transform);
-
+    std::cout << "Mesh collider added" << std::endl;
 
 }
 
