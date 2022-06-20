@@ -13,7 +13,16 @@ Window::Window(int size_x, int size_y, const char* title, GLFWmonitor* monitor, 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    window = glfwCreateWindow(size_x, size_y, title, monitor, share);
+    // Borderless Window
+    GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
+    glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+    glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+    glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+    glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+
+    window = glfwCreateWindow(mode->width, mode->height, title, primaryMonitor, share);
+    //glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
 
     if (!window)
     {
@@ -37,6 +46,16 @@ Window::Window(int size_x, int size_y, const char* title, GLFWmonitor* monitor, 
 Window::~Window()
 {
     glfwTerminate();
+}
+
+void Window::CloseWindow()
+{
+    glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
+
+void Window::MinimizeWindow()
+{
+   
 }
 
 void Window::Destroy()

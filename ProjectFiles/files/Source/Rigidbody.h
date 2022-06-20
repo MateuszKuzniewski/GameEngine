@@ -30,7 +30,7 @@ public:
 	void AddSphereCollider(const float radius);
 	void AddCapsuleCollider(const float radius, const float height);
 	void AddConcaveColldier(const std::vector<float>& vertices, const std::vector<float>& normals, const std::vector<uint32_t>& indices);
-	//void AddConcaveColldier(float* vertices, uint32_t* indices);
+	void RemoveCollider();
 	void SetPhysicalMaterialProperties(const float bounciness, const float friction);
 
 	bool isGravity;

@@ -6,7 +6,7 @@
 
 Application::Application()
 {
-    m_AppWindow = new Window(1600, 900, "App", NULL, NULL);
+    m_AppWindow = new Window(1920, 1080, "App", NULL, NULL);
     m_WorldSettings.gravity = rp3d::Vector3(0, -9.81f, 0);
     m_PhysicsWorld = m_PhysicsCommon.createPhysicsWorld(m_WorldSettings);
 

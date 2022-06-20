@@ -10,6 +10,8 @@ public:
 	Window(int size_x, int size_y, const char* title, GLFWmonitor* monitor, GLFWwindow* share);
 	~Window();
 
+	void CloseWindow();
+	void MinimizeWindow();
 	void Destroy();
 	GLFWwindow* GetWindow() const;
 	float GetWindowHeight() { return m_Height; };

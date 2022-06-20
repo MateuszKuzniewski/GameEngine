@@ -1,4 +1,4 @@
-#include "GUI.h"
+﻿#include "GUI.h"
 #include "ObjectManager.h"
 #include "Rigidbody.h"
 #include "MeshRenderer.h"
@@ -91,7 +91,7 @@ void GUI::InspectorPanel()
     ObjectManager& objectManager = ObjectManager::GetInstance();
    
     float offset = 20.0f;
-    ImGui::SetNextWindowSize(ImVec2(300, m_WindowHeight - offset));
+    ImGui::SetNextWindowSize(ImVec2(350, m_WindowHeight - offset));
     ImGui::SetNextWindowPos(ImVec2(0, m_WindowHeight - (m_WindowHeight - offset)));
     ImGui::Begin("Inspector");
     ImGui::Separator();
@@ -153,7 +153,7 @@ void GUI::DrawComponent(GameObject& object)
 {
     const ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
     std::string componentName = "";    
-
+   
     if (object.isSelected)
     {
         if (object.HasComponent<Rigidbody>())
@@ -177,7 +177,10 @@ void GUI::DrawComponent(GameObject& object)
                 ImGui::Spacing();
                 ImGui::Spacing();
                 ImGui::Separator();
+
+
                 //----------------------- Rigidbody -----------------------------------------
+
                 if (ImGui::BeginCombo("body type", component.GetBodyTypeString().c_str()))
                 {
                     bool isSelected = false;
@@ -203,17 +206,25 @@ void GUI::DrawComponent(GameObject& object)
                     ImGui::Checkbox("gravity", &component.isGravity);
                     component.EnableGravity(component.isGravity);
                 }
+
                 ImGui::Spacing();
                 ImGui::Spacing();
                 ImGui::Separator();
 
 
                 //----------------------- Collider -----------------------------------------
+                if (ImGui::Button("x", ImVec2(20, 20)))
+                {
+                    component.RemoveCollider();
+                }
+
+                ImGui::SameLine();
+
                 if (ImGui::BeginCombo("collider", component.GetColliderTypeString().c_str()))
                 {
 
                     bool isSelected = false;
-                    if (ImGui::Selectable("none", isSelected)) {}
+                  
                     if (ImGui::Selectable("box", isSelected))
                     {
                         component.AddBoxCollider(component.colliderSizeVec3);
@@ -231,16 +242,18 @@ void GUI::DrawComponent(GameObject& object)
                         }
                         else
                         {
-                            std::cout << "Trying to add mesh collider to object without MeshRenderer component \n";
+                            std::cout << "Trying to add mesh collider to an object without MeshRenderer component \n";
+                            exit(1);
                         }
                     }
 
                     ImGui::EndCombo();
                 }
-
+              
+                
+                
                 if (component.GetColliderTypeString() == "box")
                 {
-
                     float sizeSlider[3] = { component.colliderSizeVec3.x, component.colliderSizeVec3.y, component.colliderSizeVec3.z };
                     ImGui::DragFloat3("size", sizeSlider, 0.5f, 0.0f);
                     component.colliderSizeVec3 = rp3d::Vector3(sizeSlider[0], sizeSlider[1], sizeSlider[2]);
@@ -256,6 +269,7 @@ void GUI::DrawComponent(GameObject& object)
                 ImGui::Spacing();  
                 ImGui::Spacing();  
                 ImGui::Spacing();
+
             }
         }
 
@@ -267,6 +281,7 @@ void GUI::DrawComponent(GameObject& object)
             if (opened) ImGui::TreePop();
         }
     }
+
 }
 
 void GUI::MenuPanel()
@@ -277,6 +292,54 @@ void GUI::MenuPanel()
     ImGui::MenuItem("ASSETS");
     ImGui::MenuItem("WINDOW");
     ImGui::MenuItem("HELP");
+
+    {
+        ImVec2 buttonSize = { 40, 20 };
+        float buttonOffset = 42;
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(7.0f, 0.7f, 0.7f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(7.0f, 0.8f, 0.8f));
+
+        // minimize button
+        ImGui::SetCursorPosX(m_WindowWidth - buttonOffset * 3);
+        if (ImGui::Button("-", buttonSize))
+        {
+            m_Window->MinimizeWindow();
+        }
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::TextUnformatted("Minimize Window");
+            ImGui::EndTooltip();
+        }
+
+        // maximize button
+        ImGui::SetCursorPosX(m_WindowWidth - buttonOffset * 2);
+        if (ImGui::Button("[]", buttonSize))
+        {
+            //m_Window->MinimizeWindow();
+        }
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::TextUnformatted("Maximize Window");
+            ImGui::EndTooltip();
+        }
+
+        // close button
+        ImGui::SetCursorPosX(m_WindowWidth - buttonOffset);
+        if (ImGui::Button("X", buttonSize))
+        {
+           
+            m_Window->CloseWindow();
+        }
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::TextUnformatted("Close Window");
+            ImGui::EndTooltip();
+        }
+    }
+    ImGui::PopStyleColor(2);
     ImGui::EndMainMenuBar();
 }
 

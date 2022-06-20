@@ -13,7 +13,7 @@ Rigidbody::Rigidbody(const Component& componentData) : Component(componentData),
     m_Transform = transform;
     
     m_Rigidbody = m_PhysicsWorld->createRigidBody(m_Transform);
-
+   
 }
 
 Rigidbody::~Rigidbody()
@@ -137,21 +137,21 @@ void Rigidbody::AddBoxCollider(const rp3d::Vector3& halfPoints)
 {
     rp3d::BoxShape* shape = m_PhysicsCommon->createBoxShape(halfPoints);
     m_Collider = m_Rigidbody->addCollider(shape, m_Transform);
-    std::cout << "Box collider added" << std::endl;
+    std::cout << "Box collider added \n";
 }
 
 void Rigidbody::AddSphereCollider(const float radius)
 {
     rp3d::SphereShape* shape = m_PhysicsCommon->createSphereShape(radius);
     m_Collider = m_Rigidbody->addCollider(shape, m_Transform);
-    std::cout << "Sphere collider added" << std::endl;
+    std::cout << "Sphere collider added \n";
 }
 
 void Rigidbody::AddCapsuleCollider(const float radius, const float height)
 {
     rp3d::CapsuleShape* shape = m_PhysicsCommon->createCapsuleShape(radius, height);
     m_Collider = m_Rigidbody->addCollider(shape, m_Transform);
-    std::cout << "Capsule collider added" << std::endl;
+    std::cout << "Capsule collider added \n";
     
 }
 
@@ -183,8 +183,18 @@ void Rigidbody::AddConcaveColldier(const std::vector<float>& vertices, const std
    
     rp3d::ConcaveMeshShape* shape = m_PhysicsCommon->createConcaveMeshShape(triangleMesh);
     m_Collider = m_Rigidbody->addCollider(shape, m_Transform);
-    std::cout << "Mesh collider added" << std::endl;
+    std::cout << "Mesh collider added \n";
 
+}
+
+void Rigidbody::RemoveCollider()
+{
+    if (m_Collider != nullptr)
+    {
+        std::cout << GetColliderTypeString() << " collider removed \n";
+        m_Rigidbody->removeCollider(m_Collider);
+    }
+    m_Collider = nullptr;
 }
 
 void Rigidbody::SetPhysicalMaterialProperties(const float bounciness, const float friction)
