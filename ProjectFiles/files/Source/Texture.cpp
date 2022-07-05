@@ -10,12 +10,33 @@ Texture::Texture(const std::string& path) : m_Path(path)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	int width, height, nrChannels;
-	unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+	int width, height, channels;
+	unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 	if (data)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
+		GLenum internalFormat = 0, dataFormat = 0;
+		if (channels == 4)
+		{
+			internalFormat = GL_RGBA8;
+			dataFormat = GL_RGBA;
+		}
+		else if (channels == 3)
+		{
+			internalFormat = GL_RGB8;
+			dataFormat = GL_RGB;
+		}
+
+
+		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
+		glTextureStorage2D(m_RendererID, 1, internalFormat, width, height);
+
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+		glTextureSubImage2D(m_RendererID, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, data);
 	}
 	else
 	{

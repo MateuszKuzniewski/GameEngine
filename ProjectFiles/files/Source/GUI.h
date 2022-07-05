@@ -5,6 +5,7 @@
 #include <imgui_impl_opengl3.h>
 #include "Window.h"
 #include "GameObject.h"
+#include "Texture.h"
 
 class GUI
 {
@@ -23,6 +24,7 @@ private:
 	void SceneHierarchyPanel();
 	void InspectorPanel();
 	void MenuPanel();
+	void PlayModeBar();
 	void DrawEntity(GameObject& gameObject);
 	void DrawComponent(GameObject& object);
 
@@ -31,6 +33,6 @@ private:
 	Window* m_Window;
 	float m_WindowHeight, m_WindowWidth;
 
-	
+	std::unique_ptr<Texture> m_PlayIcon;
 };
 

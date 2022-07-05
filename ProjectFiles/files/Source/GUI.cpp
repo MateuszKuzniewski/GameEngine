@@ -2,6 +2,7 @@
 #include "ObjectManager.h"
 #include "Rigidbody.h"
 #include "MeshRenderer.h"
+#include <filesystem>
 
 GUI::GUI(Window* window) : m_Window(window)
 {
@@ -15,6 +16,9 @@ GUI::GUI(Window* window) : m_Window(window)
     m_WindowWidth = m_Window->GetWindowWidth();
     m_WindowHeight = m_Window->GetWindowHeight();
 
+    std::string projectPath = std::filesystem::current_path().parent_path().string();
+    std::string assetPath = projectPath + "\\Resources\\";
+    m_PlayIcon = std::make_unique<Texture>(assetPath + "playIcon.png");
 }
 
 GUI::~GUI()
@@ -44,6 +48,7 @@ void GUI::Render()
     SceneHierarchyPanel();
     InspectorPanel();
     MenuPanel();
+    PlayModeBar();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -71,8 +76,8 @@ void GUI::SceneHierarchyPanel()
 {
     ObjectManager& objectManager = ObjectManager::GetInstance();
 
-    ImGui::SetNextWindowSize(ImVec2(300, m_WindowHeight - 120));
-    ImGui::SetNextWindowPos(ImVec2(m_WindowWidth - 300, m_WindowHeight - (m_WindowHeight - 20)));
+    ImGui::SetNextWindowSize(ImVec2(300, m_WindowHeight - 124));
+    ImGui::SetNextWindowPos(ImVec2(m_WindowWidth - 300, m_WindowHeight - (m_WindowHeight - 24)));
 
     ImGui::Begin("Hierarchy");
     ImGui::Separator();
@@ -90,7 +95,7 @@ void GUI::InspectorPanel()
 {
     ObjectManager& objectManager = ObjectManager::GetInstance();
    
-    float offset = 20.0f;
+    float offset = 24.0f;
     ImGui::SetNextWindowSize(ImVec2(350, m_WindowHeight - offset));
     ImGui::SetNextWindowPos(ImVec2(0, m_WindowHeight - (m_WindowHeight - offset)));
     ImGui::Begin("Inspector");
@@ -286,20 +291,26 @@ void GUI::DrawComponent(GameObject& object)
 
 void GUI::MenuPanel()
 {
+
+    ImVec2 menuBarPadding = { 0,6 };
+    ImVec2 buttonSize = { 40, 26 };
+    float buttonOffset = 42;
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, menuBarPadding);
     ImGui::BeginMainMenuBar();
-    ImGui::MenuItem("FILE");
-    ImGui::MenuItem("EDIT");
-    ImGui::MenuItem("ASSETS");
-    ImGui::MenuItem("WINDOW");
-    ImGui::MenuItem("HELP");
+    ImGui::SetCursorPosX(20);
+    ImGui::MenuItem("File");
+    ImGui::MenuItem("Edit");
+    ImGui::MenuItem("Assets");
+    ImGui::MenuItem("Window");
+    ImGui::MenuItem("Help");
 
+
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(7.0f, 0.7f, 0.7f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(7.0f, 0.8f, 0.8f));
+
+    // minimize button
     {
-        ImVec2 buttonSize = { 40, 20 };
-        float buttonOffset = 42;
-        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(7.0f, 0.7f, 0.7f));
-        ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(7.0f, 0.8f, 0.8f));
-
-        // minimize button
+       
         ImGui::SetCursorPosX(m_WindowWidth - buttonOffset * 3);
         if (ImGui::Button("-", buttonSize))
         {
@@ -311,8 +322,12 @@ void GUI::MenuPanel()
             ImGui::TextUnformatted("Minimize Window");
             ImGui::EndTooltip();
         }
+    }
 
-        // maximize button
+
+    // maximize button
+    {
+       
         ImGui::SetCursorPosX(m_WindowWidth - buttonOffset * 2);
         if (ImGui::Button("[]", buttonSize))
         {
@@ -324,12 +339,15 @@ void GUI::MenuPanel()
             ImGui::TextUnformatted("Maximize Window");
             ImGui::EndTooltip();
         }
+    }
 
-        // close button
+
+    // close button
+    {
+      
         ImGui::SetCursorPosX(m_WindowWidth - buttonOffset);
         if (ImGui::Button("X", buttonSize))
         {
-           
             m_Window->CloseWindow();
         }
         if (ImGui::IsItemHovered())
@@ -339,7 +357,44 @@ void GUI::MenuPanel()
             ImGui::EndTooltip();
         }
     }
+
     ImGui::PopStyleColor(2);
     ImGui::EndMainMenuBar();
+    ImGui::PopStyleVar(1);
+
+   
+    
 }
 
+void GUI::PlayModeBar()
+{
+
+   
+
+    ImVec2 buttonSize = { 40,40 };
+    ImGuiWindowFlags flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground;
+    // ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.0f);
+    //ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 15.0f);
+   // ImGui::SetNextWindowPos(ImVec2(m_WindowWidth / 2, 26));
+    //ImGui::SetNextWindowBgAlpha(0.7);
+    
+
+
+    ImGui::Begin("Window ");
+    if (ImGui::BeginChild("child"))
+    {
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0, 0, 0, 0.8f));
+       // ImGui::Image(0, buttonSize, ImVec2(0, 0), ImVec2(1, 1)); ImGui::SameLine();
+        ImGui::ImageButton((ImTextureID)m_PlayIcon->GetRendererID(), buttonSize, ImVec2(0, 0), ImVec2(1, 1), 0);
+        drawList->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), IM_COL32(255, 255, 0, 255), 5.0f);
+        ImGui::PopStyleColor(2);
+        ImGui::EndChild();
+    }
+
+
+    ImGui::End();
+
+
+}
