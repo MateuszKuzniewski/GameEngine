@@ -20,67 +20,32 @@ Application::~Application()
 
 void Application::Run()
 {
+    float sceneColour[4] = { 0.5f, 1.0f, 0.5f, 1.0f };
+    
     const double dt = 1.0 / 60.0;
-
     double currentTime = glfwGetTime();
     double accumulator = 0.0;
 
-    std::string projectPath = std::filesystem::current_path().parent_path().string(); 
-    std::string assetPath = projectPath + "\\Resources\\";
-    std::string shaderPath = projectPath + "\\files\\" + "\\Shaders\\";
+    std::string vertexShaderSrc = EnginePaths::ShaderPath() + "default.vert";
+    std::string fragmentShaderSrc = EnginePaths::ShaderPath() + "default.frag";
 
-    std::string vertexShaderSrc = shaderPath + "default.vert";
-    std::string fragmentShaderSrc = shaderPath + "default.frag";
-
-    m_Renderer = std::make_unique<Renderer>();
-    m_Texture  = std::make_unique<Texture>(assetPath + "container.jpg");
-    m_Shader   = std::make_shared<Shader>(vertexShaderSrc, fragmentShaderSrc);
-    m_GUI      = std::make_unique<GUI>(m_AppWindow);
-    m_Input    = std::make_unique<Input>(m_AppWindow);
     Component componentData(m_PhysicsWorld, &m_PhysicsCommon);
+    m_Renderer      = std::make_unique<Renderer>();
+    m_Texture       = std::make_unique<Texture>(EnginePaths::AssetPath() + "container.jpg");
+    m_Shader        = std::make_shared<Shader>(vertexShaderSrc, fragmentShaderSrc);
+    m_GUI           = std::make_unique<GUI>(m_AppWindow);
+    m_Input         = std::make_unique<Input>(m_AppWindow);
 
-    GameObject& m_MonkeyHead = m_ObjectManager.CreateGameObject();
-    m_MonkeyHead.name = "Monkey Head";
-    m_MonkeyHead.AddComponent<MeshRenderer>(componentData);
-    m_MonkeyHead.AddComponent<Rigidbody>(componentData);
-    auto& monkeyHeadRB = m_MonkeyHead.GetComponent<Rigidbody>();
-    auto& monkeyHeadMesh = m_MonkeyHead.GetComponent<MeshRenderer>();
-    monkeyHeadMesh.LoadFromOBJ(assetPath + "monkey.obj");
-    monkeyHeadRB.AddSphereCollider(1.0f);
-    monkeyHeadRB.SetPhysicalMaterialProperties(0.5f, 0.5f);
-    monkeyHeadRB.SetPosition(rp3d::Vector3(0.0f, 5.0f, 0.0f));
-    monkeyHeadRB.SetRigidbodyType(rp3d::BodyType::STATIC);
+    m_Scene         = std::make_unique<Scene>();
+    m_DefaultScene  = std::make_unique<DefaultScene>();
+    m_ParticleScene = std::make_unique<ParticleSystemScene>();
 
+    m_DefaultScene->Begin(m_ObjectManager, componentData);
+    m_ParticleScene->Begin(m_ObjectManager, componentData);
 
-  /*  rp3d::Vector3 colldierSize(5.0f, 0.2f, 5.0f);
-    m_Ground = std::make_shared<GameObject>();
-    m_Ground->AddComponent<MeshRenderer>(componentData);
-    m_Ground->AddComponent<Rigidbody>(componentData);
-    auto& groundRB = m_Ground->GetComponent<Rigidbody>();
-    auto& groundMesh = m_Ground->GetComponent<MeshRenderer>();
-    groundMesh.GenerateQuad();
-    groundRB.SetRigidbodyType(rp3d::BodyType::STATIC);
-    groundRB.SetPositon(rp3d::Vector3(0.0f, -10.0f, -5.0f));
-    groundRB.SetRotation(rp3d::Vector3(0.0f, 0.0f, 45.0f));
-    groundRB.AddBoxCollider(colldierSize);
-    groundRB.SetPhysicalMaterialProperties(0.5f, 0.5f);*/
-
-    GameObject& m_Terrain = m_ObjectManager.CreateGameObject();
-    m_Terrain.name = "Terrain";
-    m_Terrain.AddComponent<MeshRenderer>(componentData);
-    m_Terrain.AddComponent<Rigidbody>(componentData);
-    auto& terrainRB = m_Terrain.GetComponent<Rigidbody>();
-    auto& terrainMesh = m_Terrain.GetComponent<MeshRenderer>();
-    //terrainMesh.LoadFromHeightMap(assetPath + "terrain.png");
-    terrainMesh.LoadFromOBJ(assetPath + "terrain.obj");
-    terrainRB.SetRigidbodyType(rp3d::BodyType::STATIC);
-    terrainRB.SetPosition(rp3d::Vector3(0.0f, -10.0f, 0.0f));
-   // terrainRB.SetRotation(rp3d::Vector3(0.0f, 90.0f, 0.0f));
-    //terrainRB.AddConcaveColldier(terrainMesh.GetRawVertices(), terrainMesh.GetRawNormals(), terrainMesh.GetIndices());
-
-
-
-    float sceneColour[4] = { 0.5f, 1.0f, 0.5f, 1.0f };
+    
+    // Change default scene to load a new scene
+    m_Scene = std::move(m_DefaultScene);
 
 
     while (!glfwWindowShouldClose(m_AppWindow->GetWindow()))
@@ -98,24 +63,17 @@ void Application::Run()
             accumulator -= dt;
            
         }
-        
-
+       
         m_Shader->UploadUniformVec3("u_SceneColour", glm::vec3(sceneColour[0], sceneColour[1], sceneColour[2]));
         m_Renderer->Setup();
-        m_Renderer->Submit(monkeyHeadRB.GetOpenGLTransform(), monkeyHeadMesh.GetVertexArray(), monkeyHeadMesh.GetIndexBuffer(), m_Shader, m_CameraInstance);
-        m_Renderer->Submit(terrainRB.GetOpenGLTransform(), terrainMesh.GetVertexArray(), terrainMesh.GetIndexBuffer(), m_Shader, m_CameraInstance);
-        //m_Renderer->Submit(groundRB.GetOpenGLTransform(), groundMesh.GetVertexArray(), groundMesh.GetIndexBuffer(), m_Shader, m_CameraInstance);
-
+        m_Scene->Render(m_Renderer, m_Shader, m_CameraInstance, m_ObjectManager);
+    
         m_GUI->PrepareRender();
         m_GUI->Render();
       
-        /* Swap front and back buffers */
         glfwSwapBuffers(m_AppWindow->GetWindow());
-        /* Poll for and process events */
         glfwPollEvents();
     }
-
-
 }
 
 

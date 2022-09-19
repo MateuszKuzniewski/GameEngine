@@ -14,17 +14,17 @@ Window::Window(int size_x, int size_y, const char* title, GLFWmonitor* monitor, 
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Borderless Window
- /*   GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+    GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
     const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
     glfwWindowHint(GLFW_RED_BITS, mode->redBits);
     glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
-    window = glfwCreateWindow(mode->width, mode->height, title, primaryMonitor, share);*/
+    window = glfwCreateWindow(mode->width, mode->height, title, primaryMonitor, share);
 
     // Windowed
-    window = glfwCreateWindow(size_x, size_y, title, monitor, share);
+    //window = glfwCreateWindow(size_x, size_y, title, monitor, share);
     
 
     if (!window)
@@ -46,6 +46,7 @@ Window::Window(int size_x, int size_y, const char* title, GLFWmonitor* monitor, 
     std::cout << "OpenGL: " << glGetString(GL_VERSION) << std::endl;
   
 }
+
 Window::~Window()
 {
     glfwTerminate();

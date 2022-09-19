@@ -48,7 +48,7 @@ void GUI::Render()
     SceneHierarchyPanel();
     InspectorPanel();
     MenuPanel();
-    PlayModeBar();
+    // PlayModeBar();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -369,8 +369,6 @@ void GUI::MenuPanel()
 void GUI::PlayModeBar()
 {
 
-   
-
     ImVec2 buttonSize = { 40,40 };
     ImGuiWindowFlags flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground;
     // ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.0f);
@@ -378,8 +376,6 @@ void GUI::PlayModeBar()
    // ImGui::SetNextWindowPos(ImVec2(m_WindowWidth / 2, 26));
     //ImGui::SetNextWindowBgAlpha(0.7);
     
-
-
     ImGui::Begin("Window ");
     if (ImGui::BeginChild("child"))
     {
