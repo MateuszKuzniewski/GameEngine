@@ -17,14 +17,12 @@ void Renderer::Setup()
 
 void Renderer::Submit(const glm::mat4& transform, std::shared_ptr<VertexArray> vertexArray, std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<Shader> shader, Camera& camera)
 {
-
     shader->Bind();
-    shader->UploadUniformMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
-    shader->UploadUniformMat4("u_ViewMatrix", camera.GetViewMatrix());
-    shader->UploadUniformVec3("u_ViewPos", camera.GetPosition());
-    shader->UploadUniformMat4("u_Transform", transform);
+    shader->UploadUniformMat4("u_viewProjection", camera.GetViewProjectionMatrix());
+    shader->UploadUniformMat4("u_viewMatrix", camera.GetViewMatrix());
+    shader->UploadUniformVec3("u_viewPos", camera.GetPosition());
+    shader->UploadUniformMat4("u_transform", transform);
 
     vertexArray->Bind();
     glDrawElements(GL_TRIANGLES, indexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
-
 }

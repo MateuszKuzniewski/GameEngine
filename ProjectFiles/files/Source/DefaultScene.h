@@ -10,6 +10,7 @@ public:
 	~DefaultScene();
 
 	void Begin(ObjectManager& objectManager, const Component& componentData) override;
+	void Update(const float dt) override;
 	void Render(const std::unique_ptr<Renderer>& renderer, const std::shared_ptr<Shader> shader, Camera& camera, ObjectManager& objectManager) override;
 
 };

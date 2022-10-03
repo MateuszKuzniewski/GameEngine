@@ -56,6 +56,10 @@ void DefaultScene::Begin(ObjectManager& objectManager, const Component& componen
 
 }
 
+void DefaultScene::Update(const float dt)
+{
+}
+
 void DefaultScene::Render(const std::unique_ptr<Renderer>& renderer, const std::shared_ptr<Shader> shader, Camera& camera, ObjectManager& objectManager)
 {
     for (auto& ref : objectManager.objectRegistry)
