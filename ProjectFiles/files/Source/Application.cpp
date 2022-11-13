@@ -61,7 +61,7 @@ void Application::Run()
 
     Initialize();
 
-    m_DefaultScene->Begin(m_ObjectManager, componentData);
+    //m_DefaultScene->Begin(m_ObjectManager, componentData);
     m_ParticleScene->Begin(m_ObjectManager, componentData);
 
     // Change default scene to load a new scene
@@ -87,9 +87,8 @@ void Application::Run()
         
         m_Shader->UploadUniformVec3("u_sceneColour", glm::vec3(sceneColour[0], sceneColour[1], sceneColour[2]));
         m_Renderer->Setup();
-        m_Scene->Render(m_Renderer, m_Shader, m_CameraInstance, m_ObjectManager);
+        m_Scene->Render(m_Renderer, m_particleShader, m_CameraInstance, m_ObjectManager);
     
-        m_GUI->PrepareRender();
         m_GUI->Render();
       
         glfwSwapBuffers(m_AppWindow->GetWindow());

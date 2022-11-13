@@ -156,7 +156,6 @@ void Rigidbody::AddCapsuleCollider(const float radius, const float height)
 }
 
 void Rigidbody::AddConcaveColldier(const std::vector<float>& vertices, const std::vector<float>& normals, const std::vector<uint32_t>& indices)
-//void Rigidbody::AddConcaveColldier(float* vertices, uint32_t* indices)
 {
     m_Vertices.clear();
     m_Normals.clear();

@@ -29,6 +29,7 @@ public:
 	glm::vec3 GetOrientation() const;
 	glm::mat4 GetViewMatrix() const;
 	glm::mat4 GetViewProjectionMatrix();
+	glm::mat4 GetProjectionMatrix() const;
 	glm::vec3 GetUpVector() const { return m_UpVector; };
 	glm::vec3 GetRightDirection() const { return glm::transpose(m_ViewMatrix)[0]; }
 	glm::vec3 GetViewDir() const { return -glm::transpose(m_ViewMatrix)[2]; }

@@ -1,21 +1,26 @@
  #version 330 core    
- 
-layout (location = 0) in vec3 a_position;
+layout (location = 0) in vec3 a_Position;
 
-out vec4 particleColor;
-out float lifetime;
+uniform mat4 u_projection;
+uniform mat4 u_transform;
+uniform mat4 u_viewMatrix;
 
-uniform mat4 u_viewProjection;
-uniform vec4 u_color;
-uniform float u_lifeTime;
 
 void main()
 {
-	float scale = 10.0f;
+	mat4 modelView = u_viewMatrix;
 
-	particleColor = u_color;
-	lifetime = u_lifeTime;
+	modelView[0][0] = 1.0f;
+	modelView[0][1] = 0.0f;
+	modelView[0][2] = 0.0f;
 
-    gl_Position = u_viewProjection * vec4(a_position * scale, 1.0f);
-  
+	modelView[1][0] = 0.0f;
+	modelView[1][1] = 1.0f;
+	modelView[1][2] = 0.0f;
+
+	modelView[2][0] = 0.0f;
+	modelView[2][1] = 0.0f;
+	modelView[2][2] = 1.0f;
+	
+	gl_Position = u_projection * modelView * u_transform * vec4(a_Position, 1.0);
 }

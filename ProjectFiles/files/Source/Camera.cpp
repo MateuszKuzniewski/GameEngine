@@ -31,10 +31,15 @@ void Camera::UpdateViewMatrix()
 	m_ViewMatrix = glm::inverse(m_ViewMatrix);
 }
 
-glm::mat4 Camera::GetViewProjectionMatrix() 
+glm::mat4 Camera::GetViewProjectionMatrix()
 {
 	m_ViewProjectionMatrix =  m_ProjectionMatrix * m_ViewMatrix;
 	return m_ViewProjectionMatrix;
+}
+
+glm::mat4 Camera::GetProjectionMatrix() const
+{
+	return m_ProjectionMatrix;
 }
 
 

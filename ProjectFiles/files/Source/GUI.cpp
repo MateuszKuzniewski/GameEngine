@@ -43,7 +43,7 @@ void GUI::PrepareRender()
 
 void GUI::Render()
 {
-
+    PrepareRender();
     StatisticsPanel();
     SceneHierarchyPanel();
     InspectorPanel();
@@ -56,27 +56,21 @@ void GUI::Render()
 
 void GUI::StatisticsPanel()
 {
-    //ImGui::Begin("Scene");
-    //ImGui::Text("Scene Colour");
-    //ImGui::ColorEdit4("Colour", sceneColour);
-    //ImGui::End();
-  
     ImGui::SetNextWindowSize(ImVec2(300, 100));
-    ImGui::SetNextWindowPos(ImVec2(m_WindowWidth - 300, m_WindowHeight - 100));
+    ImGui::SetNextWindowPos(ImVec2(m_WindowWidth - 300, m_WindowHeight - 124));
     ImGui::Begin("Statistics");
     ImGui::Text("Version: 0.1.8");
     ImGui::Text("--------------");
     ImGui::Text("Average Time: %.3f ms", 1000.0f / ImGui::GetIO().Framerate);
     ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
     ImGui::End();
-
 }
 
 void GUI::SceneHierarchyPanel()
 {
     ObjectManager& objectManager = ObjectManager::GetInstance();
 
-    ImGui::SetNextWindowSize(ImVec2(300, m_WindowHeight - 124));
+    ImGui::SetNextWindowSize(ImVec2(300, m_WindowHeight - 150));
     ImGui::SetNextWindowPos(ImVec2(m_WindowWidth - 300, m_WindowHeight - (m_WindowHeight - 24)));
 
     ImGui::Begin("Hierarchy");

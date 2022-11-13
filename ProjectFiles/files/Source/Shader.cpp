@@ -176,3 +176,9 @@ void Shader::UploadUniformVec3(const std::string& name, const glm::vec3& vector)
 	GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 	glUniform3f(location, vector.x, vector.y, vector.z);
 }
+
+void Shader::UploadUniformFloat1(const std::string& name, const float value)
+{
+	GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+	glUniform1f(location, value);
+}

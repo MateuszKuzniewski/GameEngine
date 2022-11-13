@@ -2,10 +2,10 @@
           
 out vec4 FragColor;
 
-in vec4 particleColor;
-in float lifetime;
+uniform vec4 u_particleColor;
+uniform float u_lifetime;
 
 void main()
 {
-    FragColor = particleColor;
+    FragColor = vec4(u_particleColor.x, u_particleColor.y, u_particleColor.z, u_lifetime);
 }
