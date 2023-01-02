@@ -1,8 +1,9 @@
 #pragma once
-#include <vector>
 #include "GL/glew.h"
-#include <glm.hpp>
+#include "Component.h"
 #include "Shader.h"
+#include <vector>
+#include <glm.hpp>
 #include <memory>
 #include <random>
 
@@ -14,7 +15,7 @@ enum class ParticleDirection
 	RIGHT
 };
 
-class ParticleSystem
+class ParticleSystem : public Component
 {
 public:
 
@@ -29,7 +30,7 @@ public:
 		Particle() : position(0.0f), rotation(0.0f), size(1.0f), colour(1.0f), lifetime(1.0f) {}
 	};
 
-	ParticleSystem(int numberOfParticles, const ParticleDirection& direction);
+	ParticleSystem(const Component& componentData, int numberOfParticles, const ParticleDirection& direction);
 	~ParticleSystem();
 
 	void Update(const float dt);

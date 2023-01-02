@@ -31,7 +31,7 @@ private:
 
 	std::unique_ptr<Scene> m_Scene;
 	std::unique_ptr<DefaultScene> m_DefaultScene;
-	std::unique_ptr<ParticleSystemScene> m_ParticleScene;
+//	std::unique_ptr<ParticleSystemScene> m_ParticleScene;
 
 	std::unique_ptr<GUI> m_GUI;
 	std::unique_ptr<Input> m_Input;

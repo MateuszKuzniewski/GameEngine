@@ -29,9 +29,9 @@ void Application::Initialize()
     std::string fragmentShaderSrc = EnginePaths::ShaderPath() + "default.frag";
     m_Shader = std::make_shared<Shader>(vertexShaderSrc, fragmentShaderSrc);
 
-    std::string particleVertexShaderSrc = EnginePaths::ShaderPath() + "particle.vert";
+   /* std::string particleVertexShaderSrc = EnginePaths::ShaderPath() + "particle.vert";
     std::string particleFragmentShaderSrc = EnginePaths::ShaderPath() + "particle.frag";
-    m_particleShader = std::make_shared<Shader>(particleVertexShaderSrc, particleFragmentShaderSrc);
+    m_particleShader = std::make_shared<Shader>(particleVertexShaderSrc, particleFragmentShaderSrc);*/
 
 
     // Textures
@@ -47,7 +47,7 @@ void Application::Initialize()
     // Scenes
     m_Scene = std::make_unique<Scene>();
     m_DefaultScene = std::make_unique<DefaultScene>();
-    m_ParticleScene = std::make_unique<ParticleSystemScene>();
+    //m_ParticleScene = std::make_unique<ParticleSystemScene>();
 }
 
 
@@ -61,11 +61,11 @@ void Application::Run()
 
     Initialize();
 
-    //m_DefaultScene->Begin(m_ObjectManager, componentData);
-    m_ParticleScene->Begin(m_ObjectManager, componentData);
+    m_DefaultScene->Begin(m_ObjectManager, componentData);
+    //m_ParticleScene->Begin(m_ObjectManager, componentData);
 
     // Change default scene to load a new scene
-    m_Scene = std::move(m_ParticleScene);
+    m_Scene = std::move(m_DefaultScene);
 
 
     while (!glfwWindowShouldClose(m_AppWindow->GetWindow()))
@@ -80,14 +80,14 @@ void Application::Run()
         while (accumulator >= dt) 
         {
             m_PhysicsWorld->update(dt);
-            m_Scene->Update(dt);
+            m_Scene->Update(dt, m_ObjectManager);
             accumulator -= dt;
            
         }
         
         m_Shader->UploadUniformVec3("u_sceneColour", glm::vec3(sceneColour[0], sceneColour[1], sceneColour[2]));
         m_Renderer->Setup();
-        m_Scene->Render(m_Renderer, m_particleShader, m_CameraInstance, m_ObjectManager);
+        m_Scene->Render(m_Renderer, m_Shader, m_CameraInstance, m_ObjectManager);
     
         m_GUI->Render();
       

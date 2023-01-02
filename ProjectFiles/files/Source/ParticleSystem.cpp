@@ -1,9 +1,8 @@
 #include "ParticleSystem.h"
 #include "GL/glew.h"
-#include <time.h>
 
-ParticleSystem::ParticleSystem(int numberOfParticles, const ParticleDirection& direction)
-	: m_maxNumberOfParticles(300), m_defaultLifetime(1.0f), m_particleDirection(direction)
+ParticleSystem::ParticleSystem(const Component& componentData, int numberOfParticles, const ParticleDirection& direction)
+	: Component(componentData), m_maxNumberOfParticles(300), m_defaultLifetime(1.0f), m_particleDirection(direction)
 {
 
 	float vertices[] = 
@@ -108,6 +107,7 @@ void ParticleSystem::Render(const std::shared_ptr<Shader>& shader)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	shader->Bind(); 
+
 	for (auto& particle : m_particles)
 	{
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), { particle.position.x, particle.position.y, particle.position.z })

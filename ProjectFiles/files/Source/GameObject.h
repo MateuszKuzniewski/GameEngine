@@ -48,9 +48,8 @@ inline ComponentType& GameObject::GetComponent()
 		if (ptrName == tempTypeName)
 			return *static_cast<ComponentType*>(component.get());
 			
-			
 	}
-
+	
 	return *static_cast<ComponentType*>(nullptr);
 }
 

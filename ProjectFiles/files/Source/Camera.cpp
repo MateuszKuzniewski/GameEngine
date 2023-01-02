@@ -47,7 +47,7 @@ glm::mat4 Camera::GetProjectionMatrix() const
 void Camera::Move(MoveDirection direction)
 {
 
-	const float deltaSpeed = m_CameraSpeed;
+	const float deltaSpeed = m_CameraSpeed * Time::GetDeltaTime();
 
 	// x
 	if (direction == MoveDirection::LEFT)

@@ -10,7 +10,7 @@ public:
 	virtual ~Scene() {};
 
 	virtual void Begin(ObjectManager& objectManager, const Component& componentData) {};
-	virtual void Update(const float dt) {};
+	virtual void Update(const float dt, ObjectManager& objectManager) {};
 	virtual void Render(const std::unique_ptr<Renderer>& renderer, const std::shared_ptr<Shader> shader, Camera& camera, ObjectManager& objectManager) {};
 
 };
