@@ -2,6 +2,7 @@
 #include "ObjectManager.h"
 #include "Rigidbody.h"
 #include "MeshRenderer.h"
+#include "EnginePaths.h"
 #include <filesystem>
 
 GUI::GUI(Window* window) : m_Window(window)
@@ -16,8 +17,7 @@ GUI::GUI(Window* window) : m_Window(window)
     m_WindowWidth = m_Window->GetWindowWidth();
     m_WindowHeight = m_Window->GetWindowHeight();
 
-    std::string projectPath = std::filesystem::current_path().parent_path().string();
-    std::string assetPath = projectPath + "\\Resources\\";
+    std::string assetPath = EnginePaths::AssetPath();
     m_PlayIcon = std::make_unique<Texture>(assetPath + "playIcon.png");
 }
 

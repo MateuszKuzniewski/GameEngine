@@ -95,6 +95,3 @@ void Application::Run()
         glfwPollEvents();
     }
 }
-
-
-
